@@ -54,4 +54,10 @@ router.post('/register', async (req, res) => {
     })
 })
 
+router.get('/login', (req, res) => {
+    res.render('account/login', {
+        layout: false
+    })
+})
+
 module.exports = router
