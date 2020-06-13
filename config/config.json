@@ -1,10 +1,16 @@
 {
-    "mysql": {
-      "host": "remotemysql.com",
-      "port": 3306,
-      "user": "7o9dMGfNsY",
-      "password": "1jahaX1d9x",
-      "database": "7o9dMGfNsY",
-      "connectionLimit": 50
-    }
+  "mysql": {
+    "host": "remotemysql.com",
+    "port": 3306,
+    "user": "7o9dMGfNsY",
+    "password": "1jahaX1d9x",
+    "database": "7o9dMGfNsY",
+    "connectionLimit": 50
+  },
+  "authentication": {
+    "saltRounds": 8
+  },
+  "premium_time": {
+    "dates": 7
   }
+}
