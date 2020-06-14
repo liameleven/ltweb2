@@ -62,14 +62,12 @@ router.get('/login', (req, res) => {
     })
 
 })  
-router.post('/login', async function (req, res) {
-    console.log(req.body); 
-    const user= await usersModel.singleByEmail(req.body.email);
-    console.log(user);    
+router.post('/login', async function (req, res) {     
+    const user= await usersModel.getByEmail(req.body.email);        
     if (user!=null)
     {  
-        const rs = bcrypt.compareSync(req.body.password,user.password);  
-        console.log(rs);
+        const rs = bcrypt.compareSync(req.body.password,user.password);
+        
       if(rs==false)
       {
         res.render('account/login', {
