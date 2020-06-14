@@ -23,5 +23,14 @@ module.exports = {
     },
     create: (user) => {
         return db.add(TBL_USERS, user)
-    }
+    },
+    ///////////////////////////
+
+    singleByEmail: async function (email) {
+        const rows = await db.load(`select * from ${TBL_USERS} where email = '${email}'`);
+        if (rows.length === 0)
+            return null;
+    
+        return rows[0];
+      }
 };
