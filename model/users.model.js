@@ -24,5 +24,36 @@ module.exports = {
     create: (user) => {
         return db.add(TBL_USERS, user)
     },
-    
+    /////////
+    getbyCode: async (otp) => {
+        const query=`select * from ${TBL_USERS} where otp = '${otp}'`
+        console.log(query)
+        const rows = await db.load(query)
+        console.log(rows)
+        if (rows.length === 0)
+            return null;
+        return rows[0];
+    },
+    updateotp: async (entity,uid) =>{
+        const condition={
+            uid:uid
+        }
+        return db.patch(TBL_USERS,entity,condition);
+    },
+    updatepass: async (entity,uid)=>
+    {
+        const condition={
+            uid:uid
+        }
+        return db.patch(TBL_USERS,entity,condition);
+    },
+    getbyPW: async (password) => {
+        const query=`select * from ${TBL_USERS} where password = '${password}'`
+        console.log(query)
+        const rows = await db.load(query)
+        console.log(rows)
+        if (rows.length === 0)
+            return null;
+        return rows[0];
+    },
 };
