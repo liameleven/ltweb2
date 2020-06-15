@@ -6,13 +6,8 @@ app.use(express.urlencoded({
     extended: true
 }))
 
-app.engine('hbs', exphbs({
-    layoutsDir: 'views/_layouts',
-    defaultLayout: 'main',
-    partialsDir: 'views/_partials',
-    extname: '.hbs',
-}));
-app.set('view engine', 'hbs');
+require('./middlewares/view.mdw')(app)
+require('./middlewares/session.mdw')(app)
 
 app.use('/account',require('./route/account.route'))
 
