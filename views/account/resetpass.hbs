@@ -38,15 +38,16 @@
 					</span>
                      <div class="col-2">
                                 <div class="input-group">
-                                    <label class="label">NewPassword  </label>
-                                    <input class="input--style-4" type="password" name="password">
+                                    <label class="label">New Password  </label>								
+                               		<input  class="input--style-4" type="password" name="password">
+									<input hidden type="text" name="otp" value={{otp}} >
                                 </div>
                     </div>			
 					{{#if err}}
                         <p style="color: red;">{{err}}</p>
                     {{/if}}
 					<div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" id="btnSubmit" type="submit">Supmit</button>
+                            <button class="btn btn--radius-2 btn--blue" id="btnSubmit" type="submit">Submit</button>
                     </div>
 				</form>
 			</div>

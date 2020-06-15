@@ -34,6 +34,12 @@ module.exports = {
             return null;
         return rows[0];
     },
+    update: async (entity,uid) =>{
+        const condition={
+            uid:uid
+        }
+        return db.patch(TBL_USERS,entity,condition);
+    },
     updateotp: async (entity,uid) =>{
         const condition={
             uid:uid

@@ -138,7 +138,6 @@ router.post("/forgotpassword", async (req,res)=>
 })
 router.post('/checkotp', async (req, res) => {
     const code= await usersModel.getbyCode(req.body.otp)
-    console.log(req.body.otp);
     if(code == null){
    
         return res.render('account/checkotp', {
@@ -152,25 +151,28 @@ router.post('/checkotp', async (req, res) => {
             err: "Vui long dien ma xac nhan"
         })
     }
-    return res.send('ban da nhap ma dung');
+    res.redirect(`resetpass?otp=${req.body.otp}`);
 })
 router.post('/resetpass', async (req, res) => {
-    const user= await usersModel.getbyPW(req.body.password)
-    console.log(user);
-    if(user!=null) {
+     const user= await usersModel.getbyCode(req.body.otp)
+    if(user==null) {
         return res.render('account/resetpass', {
         layout: false,
-        err: "Giong mat khau cu"
+        err: "Khong tim thay tai khoan"
         })
     }
-    if(req.body.email === ''){
+    
+    if(req.body.password === ''){
         return res.render('account/resetpass', {
         layout: false,
         err: "Vui long dien mat khau"
         })
     }
-    await usersModel.updatepass(req.body.password,user.uid);
-    res.redirect('account/login');
+    const temp={
+        password:bcrypt.hashSync(req.body.password, config.authentication.saltRounds)
+    }
+    await usersModel.update(temp,user.uid);
+    res.redirect('/account/login');
 })
 router.get('/forgotpassword', (req, res) => {
     res.render('account/forgotpassword', {
@@ -184,11 +186,9 @@ router.get('/checkotp', (req, res) => {
     })
 })
 router.get('/resetpass',(req,res)=>{
-    res.render('account/resetpass', {
+    res.render(`account/resetpass`, {
+        otp:req.query.otp,
         layout: false
     })
 })
-
-  
-
 module.exports = router
