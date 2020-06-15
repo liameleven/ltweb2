@@ -7,6 +7,8 @@ const usersModel = require('../model/users.model')
 
 router.use('/public', express.static('public'))
 
+/////////////REGISTER//////////////////
+
 router.get('/register', (req, res) => {
     res.render('account/register', {
         layout: false
@@ -28,7 +30,7 @@ router.post('/register', async (req, res) => {
             err: "Email have already exist"
         })
     }
-    if (req.body.permission == "2") {
+    if (req.body.permission == usersModel.Journalist) {
         const user = await usersModel.getByPseudonym(req.body.pseudonym)
         if (user != null) {
             res.render('account/register', {
@@ -54,42 +56,38 @@ router.post('/register', async (req, res) => {
 })
 
 
-/////////////////////////////////////
+/////////////LOGIN///////////////////
 
 router.get('/login', (req, res) => {
     res.render('account/login', {
         layout: false
     })
+})
 
-})  
-router.post('/login', async function (req, res) {     
-    const user= await usersModel.getByEmail(req.body.email);        
-    if (user!=null)
-    {  
-        const rs = bcrypt.compareSync(req.body.password,user.password);
-        
-      if(rs==false)
-      {
-        res.render('account/login', {
-            layout: false,
-            err: 'Your Email Or Password Is Invalid'
-        });
+router.post('/login', async function (req, res) {
+    const user = await usersModel.getByEmail(req.body.email);
+    if (user != null) {
+        const rs = bcrypt.compareSync(req.body.password, user.password);
+
+        if (rs == false) {
+            res.render('account/login', {
+                layout: false,
+                err: 'Your Email Or Password Is Invalid'
+            });
         }
-      else 
-      {
-        if(rs==true){
-        res.send('Dang Nhap Thanh Cong');
+        else {
+            if (rs == true) {
+                res.send('Dang Nhap Thanh Cong');
+            }
         }
-      }
     }
-    else
-    {
+    else {
         res.render('account/login', {
             layout: false,
             err: 'Your Email Is Not Exists'
-          });
+        });
     }
-})  
-  
+})
+
 
 module.exports = router
