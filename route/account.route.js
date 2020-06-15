@@ -3,7 +3,6 @@ const router = express.Router()
 const moment = require('moment')
 const bcrypt = require('bcryptjs')
 const config = require('../config/config.json')
-const unixTime = require('unix-time')
 const usersModel = require('../model/users.model')
 
 router.use('/public', express.static('public'))
@@ -54,10 +53,43 @@ router.post('/register', async (req, res) => {
     })
 })
 
+
+/////////////////////////////////////
+
 router.get('/login', (req, res) => {
     res.render('account/login', {
         layout: false
     })
-})
+
+})  
+router.post('/login', async function (req, res) {     
+    const user= await usersModel.getByEmail(req.body.email);        
+    if (user!=null)
+    {  
+        const rs = bcrypt.compareSync(req.body.password,user.password);
+        
+      if(rs==false)
+      {
+        res.render('account/login', {
+            layout: false,
+            err: 'Your Email Or Password Is Invalid'
+        });
+        }
+      else 
+      {
+        if(rs==true){
+        res.send('Dang Nhap Thanh Cong');
+        }
+      }
+    }
+    else
+    {
+        res.render('account/login', {
+            layout: false,
+            err: 'Your Email Is Not Exists'
+          });
+    }
+})  
+  
 
 module.exports = router

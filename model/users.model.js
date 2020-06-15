@@ -23,5 +23,6 @@ module.exports = {
     },
     create: (user) => {
         return db.add(TBL_USERS, user)
-    }
+    },
+    
 };
