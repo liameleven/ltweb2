@@ -69,24 +69,18 @@ router.post('/login', async function (req, res) {
     if (user != null) {
         const rs = bcrypt.compareSync(req.body.password, user.password);
 
-        if (rs == false) {
+        if (!rs) {
             res.render('account/login', {
                 layout: false,
                 err: 'Your Email Or Password Is Invalid'
             });
         }
-        else {
-            if (rs == true) {
-                res.send('Dang Nhap Thanh Cong');
-            }
-        }
+        res.send('Dang Nhap Thanh Cong');
     }
-    else {
-        res.render('account/login', {
-            layout: false,
-            err: 'Your Email Is Not Exists'
-        });
-    }
+    res.render('account/login', {
+        layout: false,
+        err: 'Your Email Or Password Is Invalid'
+    });
 })
 
 
