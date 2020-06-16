@@ -4,7 +4,8 @@ const moment = require('moment')
 const bcrypt = require('bcryptjs')
 const config = require('../config/config.json')
 const usersModel = require('../model/users.model')
-
+const randomInt = require('random-int');
+var nodemailer = require('nodemailer');
 router.use('/public', express.static('public'))
 
 /////////////REGISTER//////////////////
@@ -82,6 +83,103 @@ router.post('/login', async function (req, res) {
         err: 'Your Email Or Password Is Invalid'
     });
 })
+//////
+async function sendmail(to_email, name, otp) {
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: 'tintran113114115@gmail.com', // generated ethereal user
+            pass: 'ngoalong0188', // generated ethereal password
+        },
+    });
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: 'tintran113114115@gmail.com', // sender address // random ma sao m
+        to: to_email, // list of receivers
+        subject: "Ma xac nhan", // Subject line
+        text: `Dear ${name} You have selected from LTWEB2@gmail.com as your new verification page: ${otp} this code will expire three hours after email was send Why you received this email apple requires varification whenever an email address If you did not make this request, you can ignore this email`,
+        html: `Dear ${name} <br> You have selected from LTWEB2@gmail.com as your new verification page: <br><h2> ${otp} </h2>  This code will expire three hours after email was send <br> Why you received this email apple requires varification whenever an email address <br> If you did not make this request, you can ignore this email http://localhost:3000/accounts/login`,
+    });
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+};
+router.post("/forgotpassword", async (req, res) => {
+    const user = await usersModel.getByEmail(req.body.email)
+    if (user == null) {
+        return res.render('account/forgotpassword', {
+            layout: false,
+            err: "Email khong ton tai"
+        })
+    }
+    if (req.body.email === '') {
+        return res.render('account/forgotpassword', {
+            layout: false,
+            err: "Vui long dien email"
+        })
+    }
+    const otp = randomInt(100000, 999999)
+    const temp = {
+        otp: otp
+    }
+    await usersModel.updateotp(temp, user.uid);
+    sendmail(req.body.email, user.user_name, otp).catch(console.error);
+    res.redirect('/account/checkotp');
+})
+router.post('/checkotp', async (req, res) => {
+    const code = await usersModel.getbyCode(req.body.otp)
+    if (code == null) {
 
+        return res.render('account/checkotp', {
+            layout: false,
+            err: "Ma kich hoat khong dung"
+        })
+    }
+    if (req.body.otp === '') {
+        return res.render('account/checkotp', {
+            layout: false,
+            err: "Vui long dien ma xac nhan"
+        })
+    }
+    res.redirect(`resetpass?otp=${req.body.otp}`);
+})
+router.post('/resetpass', async (req, res) => {
+    const user = await usersModel.getbyCode(req.body.otp)
+    if (user == null) {
+        return res.render('account/resetpass', {
+            layout: false,
+            err: "Khong tim thay tai khoan"
+        })
+    }
 
+    if (req.body.password === '') {
+        return res.render('account/resetpass', {
+            layout: false,
+            err: "Vui long dien mat khau"
+        })
+    }
+    const temp = {
+        password: bcrypt.hashSync(req.body.password, config.authentication.saltRounds)
+    }
+    await usersModel.update(temp, user.uid);
+    res.redirect('/account/login');
+})
+router.get('/forgotpassword', (req, res) => {
+    res.render('account/forgotpassword', {
+        layout: false
+    })
+})
+
+router.get('/checkotp', (req, res) => {
+    res.render('account/checkotp', {
+        layout: false
+    })
+})
+router.get('/resetpass', (req, res) => {
+    res.render(`account/resetpass`, {
+        otp: req.query.otp,
+        layout: false
+    })
+})
 module.exports = router
