@@ -83,7 +83,9 @@ router.post('/login', async function (req, res) {
         err: 'Your Email Or Password Is Invalid'
     });
 })
-//////
+
+///////////RESET-PASSWORD/////////////////////
+
 async function sendmail(to_email, name, otp) {
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -105,6 +107,7 @@ async function sendmail(to_email, name, otp) {
     console.log("Message sent: %s", info.messageId);
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 };
+
 router.post("/forgotpassword", async (req, res) => {
     const user = await usersModel.getByEmail(req.body.email)
     if (user == null) {
@@ -127,6 +130,7 @@ router.post("/forgotpassword", async (req, res) => {
     sendmail(req.body.email, user.user_name, otp).catch(console.error);
     res.redirect('/account/checkotp');
 })
+
 router.post('/checkotp', async (req, res) => {
     const code = await usersModel.getbyCode(req.body.otp)
     if (code == null) {
@@ -144,6 +148,7 @@ router.post('/checkotp', async (req, res) => {
     }
     res.redirect(`resetpass?otp=${req.body.otp}`);
 })
+
 router.post('/resetpass', async (req, res) => {
     const user = await usersModel.getbyCode(req.body.otp)
     if (user == null) {
@@ -165,6 +170,7 @@ router.post('/resetpass', async (req, res) => {
     await usersModel.update(temp, user.uid);
     res.redirect('/account/login');
 })
+
 router.get('/forgotpassword', (req, res) => {
     res.render('account/forgotpassword', {
         layout: false
@@ -176,10 +182,12 @@ router.get('/checkotp', (req, res) => {
         layout: false
     })
 })
+
 router.get('/resetpass', (req, res) => {
     res.render(`account/resetpass`, {
         otp: req.query.otp,
         layout: false
     })
 })
+
 module.exports = router
