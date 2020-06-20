@@ -1,5 +1,6 @@
 const db = require('../util/db')
 
+const TBL_BCategory = 'big_category';
 const TBL_SCategory = 'small_category';
 
 module.exports = {
@@ -11,15 +12,15 @@ module.exports = {
     },
     delete: function (id) {
         const condition = {
-            sid: id
+            id: id
         }
         return db.del(TBL_SCategory, condition);
     },
     update: function (entity) {
         const condition = {
-            sid: entity.sid
+            id: entity.id
         }
-        delete entity.sid;
+        delete entity.id;
         return db.patch(TBL_SCategory, entity, condition);
     },
     getByName: async function (name) {
@@ -32,7 +33,7 @@ module.exports = {
         return rows[0];
     },
     getByID: async function (id) {
-        const query = `select * from ${TBL_BCategory} where sid = '${id}'`
+        const query = `select * from ${TBL_SCategory} where id = '${id}'`
         console.log(query)
         const rows = await db.load(query)
         console.log(rows)

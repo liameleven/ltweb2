@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Edit Small Category</h3>
+        <h3 class="card-title">Add Small Category</h3>
     </div>
     <div class="card-body">
         <div class="col-md-12">
@@ -9,23 +9,18 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form role="form" id="quickForm" novalidate="novalidate" method="post"
-                    action="/dashboard/small-category/edit">
+                    action="/dashboard/small-category/add">
                     <div class="card-body">
-                        <input type="text" name="id" hidden value="{{smallCategory.id}}">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Name</label>
-                            <input type="text" name="name" value="{{smallCategory.name}}" class="form-control"
+                            <input type="text" name="name" class="form-control"
                                 id="exampleInputName">
                             <label>Big Category</label>
                             <select class="form-control select2 select2-danger select2-hidden-accessible"
                                 data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
                                 tabindex="-1" aria-hidden="true" name="bid">
                                 {{#each bigCategories}}
-                                {{#if selected}}
-                                <option selected value="{{bid}}" data-select2-id="14">{{name}}</option>
-                                {{else}}
                                 <option value="{{bid}}" data-select2-id="14">{{name}}</option>
-                                {{/if}}
                                 {{/each}}
                             </select>
                         </div>
