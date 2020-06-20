@@ -10,8 +10,8 @@ const auth = require('../middlewares/auth.mdw')
 
 /////////////REGISTER//////////////////
 
-router.get('/register', auth.login, (req, res) => {
-    res.render('account/register', {
+router.get('/register', (req, res) => {
+    return res.render('account/register', {
         layout: false
     })
 })
@@ -19,14 +19,14 @@ router.get('/register', auth.login, (req, res) => {
 router.post('/register', async (req, res) => {
     console.log(req.body)
     if (req.body.user_name.length === 0 || req.body.password.length === 0 || req.body.email.length === 0) {
-        res.render('account/register', {
+        return res.render('account/register', {
             layout: false,
             err: "You must fill all text box"
         })
     }
     const user = await usersModel.getByEmail(req.body.email)
     if (user != null) {
-        res.render('account/register', {
+        return res.render('account/register', {
             layout: false,
             err: "Email have already exist"
         })
@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
     if (req.body.permission == usersModel.Journalist) {
         const user = await usersModel.getByPseudonym(req.body.pseudonym)
         if (user != null) {
-            res.render('account/register', {
+            return res.render('account/register', {
                 layout: false,
                 err: "Journalist's pseudonym have already exist"
             })
@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
     }
     console.log(req.body)
     await usersModel.create(req.body)
-    res.render('index', {
+    return res.render('index', {
         layout: false
     })
 })
@@ -59,8 +59,8 @@ router.post('/register', async (req, res) => {
 
 /////////////LOGIN///////////////////
 
-router.get('/login', auth.login, (req, res) => {
-    res.render('account/login', {
+router.get('/login', (req, res) => {
+    return res.render('account/login', {
         layout: false
     })
 })
@@ -71,7 +71,7 @@ router.post('/login', async function (req, res) {
         const rs = bcrypt.compareSync(req.body.password, user.password);
 
         if (!rs) {
-            res.render('account/login', {
+            return res.render('account/login', {
                 layout: false,
                 err: 'Your Email Or Password Is Invalid'
             });
@@ -81,13 +81,16 @@ router.post('/login', async function (req, res) {
         req.session.isAuthenticated = true;
         req.session.authUser = user;
 
-        const url = req.query.retUrl || '/';
-        res.redirect(url);
+        // const url = req.query.retUrl || '/';
+        // res.redirect(url);
+        return res.send('dang nhap thanh cong');
     }
-    res.render('account/login', {
+
+    return res.render('account/login', {
         layout: false,
         err: 'Your Email Or Password Is Invalid'
     });
+
 })
 
 ///////////RESET-PASSWORD/////////////////////
@@ -178,19 +181,19 @@ router.post('/resetpass', async (req, res) => {
 })
 
 router.get('/forgotpassword', (req, res) => {
-    res.render('account/forgotpassword', {
+    return res.render('account/forgotpassword', {
         layout: false
     })
 })
 
 router.get('/checkotp', (req, res) => {
-    res.render('account/checkotp', {
+    return res.render('account/checkotp', {
         layout: false
     })
 })
 
-router.get('/resetpass', (req, res) => {
-    res.render(`account/resetpass`, {
+router.get('/resetpass', auth, (req, res) => {
+    return res.render(`account/resetpass`, {
         otp: req.query.otp,
         layout: false
     })

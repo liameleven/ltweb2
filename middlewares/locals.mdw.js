@@ -1,5 +1,3 @@
-const categoryModel = require('../models/category.model');
-
 module.exports = function (app) {
   app.use(function (req, res, next) {
     if (req.session.isAuthenticated === null) {
@@ -11,9 +9,5 @@ module.exports = function (app) {
     next();
   })
 
-  app.use(async function (req, res, next) {
-    const rows = await categoryModel.allWithDetails();
-    res.locals.lcCategories = rows;
-    next();
-  })
+  
 }
