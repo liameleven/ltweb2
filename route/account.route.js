@@ -19,22 +19,22 @@ router.get('/register', auth.login, (req, res) => {
 router.post('/register', async (req, res) => {
     console.log(req.body)
     if (req.body.user_name.length === 0 || req.body.password.length === 0 || req.body.email.length === 0) {
-        res.render('account/register', {
+        return res.render('account/register', {
             layout: false,
             err: "You must fill all text box"
         })
     }
     const user = await usersModel.getByEmail(req.body.email)
     if (user != null) {
-        res.render('account/register', {
+        return res.render('account/register', {
             layout: false,
             err: "Email have already exist"
         })
     }
-    if (req.body.permission == usersModel.Journalist) {
+    if (req.body.permission === usersModel.Journalist) {
         const user = await usersModel.getByPseudonym(req.body.pseudonym)
         if (user != null) {
-            res.render('account/register', {
+            return res.render('account/register', {
                 layout: false,
                 err: "Journalist's pseudonym have already exist"
             })
