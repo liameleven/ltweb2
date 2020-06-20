@@ -12,13 +12,25 @@ router.get('/', (req, res) => {
 })
 
 router.get('/big-category', (req, res) => {
-    res.render('dashboard/big-category', {
+    res.render('dashboard/category/big-category', {
+        layout: false,
+    })
+})
+
+router.get('/big-category/edit', (req, res) => {
+    res.render('dashboard/category/edit-big-category', {
         layout: false,
     })
 })
 
 router.get('/small-category', (req, res) => {
-    res.render('dashboard/small-category', {
+    res.render('dashboard/category/small-category', {
+        layout: false,
+    })
+})
+
+router.get('/small-category/edit', (req, res) => {
+    res.render('dashboard/category/edit-small-category', {
         layout: false,
     })
 })
