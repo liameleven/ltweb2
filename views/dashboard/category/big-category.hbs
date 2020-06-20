@@ -100,6 +100,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Big category</h3>
+                        <a class="btn btn-success btn-sm" href="/dashboard/big-category/add" role="button"
+                            title="Edit Category" style="float: right;">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
                     </div>
                     <div class="card-body">
                         <div class="col-sm-12">
@@ -117,19 +121,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{#each categories}}
                                     <tr role="row" class="odd">
-                                        <td tabindex="0" class="sorting_1">Gecko</td>
-                                        <td>Firefox 1.0
-                                            <a class="btn btn-danger btn-sm" href="#" role="button"
+                                        <td tabindex="0" class="sorting_1">{{bid}}</td>
+                                        <td>{{name}}
+                                            <a class="btn btn-danger btn-sm"
+                                                href="/dashboard/big-category/delete?bid={{bid}}" role="button"
                                                 title="Delete Category" style="float: right;margin-left: 5px;">
                                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                             </a>
-                                            <a class="btn btn-primary btn-sm" href="/dashboard/big-category/edit" role="button"
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/dashboard/big-category/edit?bid={{bid}}" role="button"
                                                 title="Edit Category" style="float: right;">
                                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
+                                    {{/each}}
                                 </tbody>
                             </table>
                         </div>
