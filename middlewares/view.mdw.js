@@ -4,9 +4,9 @@ const numeral = require('numeral');
 
 module.exports = function (app) {
   app.engine('hbs', exphbs({
-    layoutsDir: 'views/_layouts',
+    layoutsDir: 'views/layouts',
     defaultLayout: 'main',
-    partialsDir: 'views/_partials',
+    partialsDir: 'views/partials',
     extname: '.hbs',
     helpers: {
       section: hbs_sections(),
