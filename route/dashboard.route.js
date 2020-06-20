@@ -11,8 +11,14 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/category', (req, res) => {
-    res.render('dashboard/category', {
+router.get('/big-category', (req, res) => {
+    res.render('dashboard/big-category', {
+        layout: false,
+    })
+})
+
+router.get('/small-category', (req, res) => {
+    res.render('dashboard/small-category', {
         layout: false,
     })
 })
