@@ -99,7 +99,7 @@
             <section class="content">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Big category</h3>
+                        <h3 class="card-title">Edit Small Category</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
@@ -107,21 +107,36 @@
                             <div class="card card-primary">
                                 <!-- /.card-header -->
                                 <!-- form start -->
-                                <form role="form" id="quickForm" novalidate="novalidate">
+                                <form role="form" id="quickForm" novalidate="novalidate" method="post"
+                                    action="/dashboard/small-category/edit">
                                     <div class="card-body">
+                                        <input type="text" name="id" hidden value="{{getscategory.id}}">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Name</label>
-                                            <input type="text" name="name" class="form-control" id="exampleInputName">
+                                            <input type="text" name="name" value="{{getscategory.name}}"
+                                                class="form-control" id="exampleInputName">
                                             <label>Big Category</label>
                                             <select
                                                 class="form-control select2 select2-danger select2-hidden-accessible"
                                                 data-dropdown-css-class="select2-danger" style="width: 100%;"
-                                                data-select2-id="12" tabindex="-1" aria-hidden="true">
-                                                <option selected="" data-select2-id="14">Alabama</option>
-                                                <option data-select2-id="14">Test</option>
+                                                data-select2-id="12" tabindex="-1" aria-hidden="true" name="bname"
+                                                id="bname">
+                                                {{#if getbcategory}}
+                                                {
+                                                <option selected="{{getbcategory.name}}" data-select2-id="14"
+                                                    value="{{getbcategory.name}}">
+                                                    {{getbcategory.name}}</option>
+                                                }
+                                                {{/if}}
+                                                {{#each bcategory}}
+                                                <option data-select2-id="14" value="{{name}}">{{name}} </option>
+                                                {{/each}}
                                             </select>
                                         </div>
                                     </div>
+                                    {{#if err}}
+                                    <p style="color: red;">{{err}}</p>
+                                    {{/if}}
                                     <!-- /.card-body -->
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary">Submit</button>

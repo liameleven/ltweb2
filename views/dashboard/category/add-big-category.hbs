@@ -116,6 +116,9 @@
                                         <div class="form-group mb-0">
                                         </div>
                                     </div>
+                                    {{#if err}}
+                                    <p style="color: red;">{{err}}</p>
+                                    {{/if}}
                                     <!-- /.card-body -->
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary">Submit</button>

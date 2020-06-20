@@ -39,4 +39,9 @@ module.exports = {
       return null;
     return rows[0];
   },
+  exceptByName: function (name) {
+    const query = `select * from ${TBL_BCategory} where name != '${name}'`
+    return db.load(query)
+
+  },
 };
