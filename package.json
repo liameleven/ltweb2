@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app"
+    "start": "nodemon app"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "moment": "^2.26.0",
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.8",
+    "nodemon": "^2.0.4",
     "numeral": "^2.0.6",
     "random-int": "^2.0.1",
     "randomstring": "^1.1.5"
