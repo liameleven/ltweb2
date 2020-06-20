@@ -2,6 +2,8 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const app = express()
 
+app.use('/public', express.static('public'))
+
 app.use(express.urlencoded({
     extended: true
 }))
@@ -9,7 +11,8 @@ app.use(express.urlencoded({
 require('./middlewares/view.mdw')(app)
 require('./middlewares/session.mdw')(app)
 
-app.use('/account',require('./route/account.route'))
+app.use('/account', require('./route/account.route'))
+app.use('/dashboard', require('./route/dashboard.route'))
 
 const PORT = 3000
 app.listen(PORT, () => {

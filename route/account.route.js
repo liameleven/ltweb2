@@ -6,11 +6,11 @@ const config = require('../config/config.json')
 const usersModel = require('../model/users.model')
 const randomInt = require('random-int');
 var nodemailer = require('nodemailer');
-router.use('/public', express.static('public'))
+const auth = require('../middlewares/auth.mdw')
 
 /////////////REGISTER//////////////////
 
-router.get('/register', (req, res) => {
+router.get('/register', auth.login, (req, res) => {
     res.render('account/register', {
         layout: false
     })
@@ -59,7 +59,7 @@ router.post('/register', async (req, res) => {
 
 /////////////LOGIN///////////////////
 
-router.get('/login', (req, res) => {
+router.get('/login', auth.login, (req, res) => {
     res.render('account/login', {
         layout: false
     })
@@ -80,7 +80,7 @@ router.post('/login', async function (req, res) {
         delete user.password_hash;
         req.session.isAuthenticated = true;
         req.session.authUser = user;
-        
+
         const url = req.query.retUrl || '/';
         res.redirect(url);
     }
