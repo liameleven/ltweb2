@@ -76,7 +76,13 @@ router.post('/login', async function (req, res) {
                 err: 'Your Email Or Password Is Invalid'
             });
         }
-        res.send('Dang Nhap Thanh Cong');
+
+        delete user.password_hash;
+        req.session.isAuthenticated = true;
+        req.session.authUser = user;
+        
+        const url = req.query.retUrl || '/';
+        res.redirect(url);
     }
     res.render('account/login', {
         layout: false,
