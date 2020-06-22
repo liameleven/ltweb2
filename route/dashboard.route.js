@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth.mdw')
 const userModel = require('../model/users.model')
 const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
+const tagModel = require('../model/tag-name.model')
 
 ////////////ADMIN//////////////
 
@@ -116,6 +117,50 @@ router.get('/small-category/add', async (req, res) => {
 router.post('/small-category/add', async (req, res) => {
     await smallCategoryModel.create(req.body)
     res.redirect('/dashboard/small-category')
+})
+
+////////TAG-NAME/////////////////////
+router.get('/tag-name', async (req, res) => {
+    var tag = await tagModel.getAll()
+    res.render('dashboard/tag/tag-name', {
+        layout: 'admin-dashboard.hbs',
+        tag: tag,
+    })
+})
+
+router.get('/tag-name/add', (req, res) => {
+    res.render('dashboard/tag/add-tag-name', {
+        layout: 'admin-dashboard.hbs',
+    })
+})
+
+router.post('/tag-name/add', async (req, res) => {
+    await tagModel.create(req.body)
+    res.redirect('/dashboard/tag-name')
+})
+
+router.get('/tag-name/edit', async (req, res) => {
+    if (!req.query.id) {
+        res.redirect('/dashboard')
+    }
+    var tag = await tagModel.getByID(req.query.id)
+    res.render('dashboard/tag/edit-tag-name', {
+        layout: 'admin-dashboard.hbs',
+        tag
+    })
+})
+
+router.post('/tag-name/edit', async (req, res) => {
+    await tagModel.update(req.body)
+    res.redirect('/dashboard/tag-name')
+})
+
+router.get('/tag-name/delete', async (req, res) => {
+    if (!req.query.id) {
+        return res.redirect('/dashboard')
+    }
+    await tagModel.delete(req.query.id)
+    res.redirect('back')
 })
 
 module.exports = router
