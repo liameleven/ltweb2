@@ -1,0 +1,43 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Tag</h3>
+        <a class="btn btn-success btn-sm" href="/dashboard/tag-name/add" role="button" title="Edit Tag"
+            style="float: right;">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table id="example2" class="table table-bordered table-hover dataTable dtr-inline" role="grid"
+                aria-describedby="example2_info">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">ID
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each tag}}
+                    <tr role="row" class="odd">
+                        <td tabindex="0" class="sorting_1">{{id}}</td>
+                        <td>{{name}}
+                            <a class="btn btn-danger btn-sm" href="/dashboard/tag-name/delete?id={{id}}" role="button"
+                                title="Delete Tag" style="float: right;margin-left: 5px;">
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                            </a>
+                            <a class="btn btn-primary btn-sm" href="/dashboard/tag-name/edit?id={{id}}" role="button"
+                                title="Edit Tag" style="float: right;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
