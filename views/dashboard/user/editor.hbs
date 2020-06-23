@@ -1,0 +1,46 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Editor</h3>
+    </div>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table id="example2" class="table table-bordered table-hover dataTable dtr-inline" role="grid"
+                aria-describedby="example2_info">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">ID
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">User Name
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Email
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Birthday
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Gender
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Phone
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each users}}
+                    <tr role="row" class="odd">
+                        <td tabindex="0" class="sorting_1">{{uid}}</td>
+                        <td>{{user_name}}</td>
+                        <td>{{email}}</td>
+                        <td>{{birthday}}</td>
+                        <td>{{gender}}</td>
+                        <td>{{phone}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

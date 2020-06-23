@@ -31,12 +31,12 @@ router.post('/register', async (req, res) => {
             err: "Email have already exist"
         })
     }
-    if (req.body.permission === usersModel.Journalist) {
+    if (req.body.permission === usersModel.Writer) {
         const user = await usersModel.getByPseudonym(req.body.pseudonym)
         if (user != null) {
             return res.render('account/register', {
                 layout: false,
-                err: "Journalist's pseudonym have already exist"
+                err: "Writer's pseudonym have already exist"
             })
         }
     }

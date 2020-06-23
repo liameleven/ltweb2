@@ -3,24 +3,27 @@ const db = require('../util/db')
 const TBL_USERS = 'users';
 
 module.exports = {
+    Male: "1",
+    Female: "2",
     Subscriber: "1",
-    Journalist: "2",
+    Writer: "2",
     Editor: "3",
     Admin: "4",
+    getListByPermission: async (permission) => {
+        const query = `select * from ${TBL_USERS} where permission = '${permission}'`
+        const rows = await db.load(query)
+        return rows
+    },
     getByEmail: async (email) => {
         const query = `select * from ${TBL_USERS} where email = '${email}'`
-        console.log(query)
         const rows = await db.load(query);
-        console.log(rows)
         if (rows.length === 0)
             return null;
         return rows[0];
     },
     getByPseudonym: async (pseudonym) => {
         const query = `select * from ${TBL_USERS} where pseudonym = '${pseudonym}`
-        console.log(query)
         const rows = await db.load(query)
-        console.log(rows)
         if (rows.length === 0)
             return null;
         return rows[0];
@@ -30,38 +33,33 @@ module.exports = {
     },
     /////////
     getbyCode: async (otp) => {
-        const query=`select * from ${TBL_USERS} where otp = '${otp}'`
-        console.log(query)
+        const query = `select * from ${TBL_USERS} where otp = '${otp}'`
         const rows = await db.load(query)
-        console.log(rows)
         if (rows.length === 0)
             return null;
         return rows[0];
     },
-    update: async (entity,uid) =>{
-        const condition={
-            uid:uid
+    update: async (entity, uid) => {
+        const condition = {
+            uid: uid
         }
-        return db.patch(TBL_USERS,entity,condition);
+        return db.patch(TBL_USERS, entity, condition);
     },
-    updateotp: async (entity,uid) =>{
-        const condition={
-            uid:uid
+    updateotp: async (entity, uid) => {
+        const condition = {
+            uid: uid
         }
-        return db.patch(TBL_USERS,entity,condition);
+        return db.patch(TBL_USERS, entity, condition);
     },
-    updatepass: async (entity,uid)=>
-    {
-        const condition={
-            uid:uid
+    updatepass: async (entity, uid) => {
+        const condition = {
+            uid: uid
         }
-        return db.patch(TBL_USERS,entity,condition);
+        return db.patch(TBL_USERS, entity, condition);
     },
     getbyPW: async (password) => {
-        const query=`select * from ${TBL_USERS} where password = '${password}'`
-        console.log(query)
+        const query = `select * from ${TBL_USERS} where password = '${password}'`
         const rows = await db.load(query)
-        console.log(rows)
         if (rows.length === 0)
             return null;
         return rows[0];

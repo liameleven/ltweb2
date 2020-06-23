@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const auth = require('../middlewares/auth.mdw')
+const moment = require('moment')
 const userModel = require('../model/users.model')
 const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
@@ -161,6 +161,72 @@ router.get('/tag-name/delete', async (req, res) => {
     }
     await tagModel.delete(req.query.id)
     res.redirect('back')
+})
+
+
+///////////USERS//////////////
+
+router.get('/subscriber', async (req, res) => {
+    const users = await userModel.getListByPermission(userModel.Subscriber)
+    users.forEach(user => {
+        var now = moment.now()
+        if (user.premium_time < now) {
+            user.expired = true
+        }
+        if (user.premium_time >= now) {
+            user.expired = false
+        }
+        if (user.gender == userModel.Male) {
+            user.gender = "Male"
+        }
+        if (user.gender == userModel.Female) {
+            user.gender = "Female"
+        }
+        var birthday = moment(user.birthday).format("DD-MM-YYYY")
+        user.birthday = birthday
+        var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm:ss")
+        user.premium_time = premium_time
+    })
+    res.render('dashboard/user/subscriber', {
+        layout: 'admin-dashboard.hbs',
+        users
+    })
+})
+
+router.get('/writer', async (req, res) => {
+    const users = await userModel.getListByPermission(userModel.Writer)
+    users.forEach(user => {
+        if (user.gender == userModel.Male) {
+            user.gender = "Male"
+        }
+        if (user.gender == userModel.Female) {
+            user.gender = "Female"
+        }
+        var birthday = moment(user.birthday).format("DD-MM-YYYY")
+        user.birthday = birthday
+    })
+    res.render('dashboard/user/writer', {
+        layout: 'admin-dashboard.hbs',
+        users
+    })
+})
+
+router.get('/editor', async (req, res) => {
+    const users = await userModel.getListByPermission(userModel.Editor)
+    users.forEach(user => {
+        if (user.gender == userModel.Male) {
+            user.gender = "Male"
+        }
+        if (user.gender == userModel.Female) {
+            user.gender = "Female"
+        }
+        var birthday = moment(user.birthday).format("DD-MM-YYYY")
+        user.birthday = birthday
+    })
+    res.render('dashboard/user/editor', {
+        layout: 'admin-dashboard.hbs',
+        users
+    })
 })
 
 module.exports = router
