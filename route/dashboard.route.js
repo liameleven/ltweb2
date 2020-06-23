@@ -9,7 +9,7 @@ const tagModel = require('../model/tag-name.model')
 ////////////ADMIN//////////////
 
 router.get('/', (req, res) => {
-    res.render('dashboard/admin', {
+    res.render('layouts/admin-dashboard', {
         layout: false,
     })
 })
