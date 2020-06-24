@@ -70,4 +70,13 @@ module.exports = {
             return null;
         return rows[0];
     },
+    /////////////////
+    pagebyPermission: async (permission, limit, offset) => {
+        return await db.load(`select * from ${TBL_USERS} where permission = '${permission}' limit ${limit} offset ${offset}`)
+    },
+    countbyPermission: async (permission) => {
+        const row = await db.load(`select count(*) as total from ${TBL_USERS} where permission = '${permission}'`)
+        return row[0].total
+    }
+
 };

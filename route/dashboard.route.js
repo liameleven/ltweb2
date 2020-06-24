@@ -169,30 +169,31 @@ router.get('/tag-name/delete', async (req, res) => {
 
 ///////////ADMIN-USERS//////////////
 
-router.get('/subscriber', async (req, res) => {
-    const users = await userModel.getListByPermission(userModel.Subscriber)
-    users.forEach(user => {
-        var now = moment().unix()
-        if (user.premium_time < now) {
-            user.expired = true
+router.get('/subscriber', async (req, res) => {    
+    const page = +req.query.page || 1;
+    if (page < 0) page = 1
+    var offset = (page - 1) * config.pagination.limit // số sản phẩm lược bỏ tính từ đầu 
+    var users = await userModel.pagebyPermission(userModel.Subscriber, config.pagination.limit, offset)
+    var total = await userModel.countbyPermission(userModel.Subscriber)
+    const nPages = Math.ceil(total / config.pagination.limit)
+    const page_items = []
+    for (let i = 1; i <= nPages; i++) {
+        const item = {
+            value: i,
+            isActive: i === page
         }
-        if (user.premium_time >= now) {
-            user.expired = false
-        }
-        if (user.gender == userModel.Male) {
-            user.gender = "Male"
-        }
-        if (user.gender == userModel.Female) {
-            user.gender = "Female"
-        }
-        var birthday = moment(user.birthday).format("DD-MM-YYYY")
-        user.birthday = birthday
-        var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm")
-        user.premium_time = premium_time
-    })
+        page_items.push(item)
+    }
+    console.log(page_items)
+    console.log(page)
     res.render('dashboard/user/subscriber', {
         layout: 'admin-dashboard.hbs',
-        users
+        users,
+        page_items,
+        prev_value: page - 1,
+        next_value: page + 1,
+        can_go_prev: page > 1,
+        can_go_next: page < nPages
     })
 })
 

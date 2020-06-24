@@ -12,5 +12,8 @@
   },
   "premium_time": {
     "dates": 7
+  },
+  "pagination": {
+    "limit": 6
   }
 }
