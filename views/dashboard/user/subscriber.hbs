@@ -1,11 +1,11 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-header border-transparent">
         <h3 class="card-title">Subscriber</h3>
     </div>
-    <div class="card-body">
-        <div class="col-sm-12">
-            <table id="example2" class="table table-bordered table-hover dataTable dtr-inline" role="grid"
-                aria-describedby="example2_info">
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table m-0">
                 <thead>
                     <tr role="row">
                         <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
@@ -42,7 +42,7 @@
                         <td>{{phone}}</td>
                         <td>{{premium_time}}
                             {{#if expired}}
-                            <i class="fa fa-exclamation-circle" aria-hidden="true" style="float: right;color:red;" alt="Expired"></i>
+                            <span class="badge badge-danger" style="float: right;">Expired</span>
                             {{/if}}
                         </td>
                     </tr>
@@ -50,5 +50,10 @@
                 </tbody>
             </table>
         </div>
+        <!-- /.table-responsive -->
     </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+    </div>
+    <!-- /.card-footer -->
 </div>
