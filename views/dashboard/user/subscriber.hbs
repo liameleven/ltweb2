@@ -42,7 +42,9 @@
                         <td>{{phone}}</td>
                         <td>{{premium_time}}
                             {{#if expired}}
-                            <span class="badge badge-danger" style="float: right;">Expired</span>
+                            <a class="btn btn-primary btn-sm" href="/dashboard/subscriber/extend?uid={{uid}}"
+                                style="float: right;">Extend</a>
+                            <span class="badge badge-danger">Expired</span>
                             {{/if}}
                         </td>
                     </tr>

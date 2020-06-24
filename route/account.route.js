@@ -8,6 +8,8 @@ const randomInt = require('random-int');
 var nodemailer = require('nodemailer');
 const auth = require('../middlewares/auth.mdw')
 
+const OneDayInSeconds = 60 * 60 * 24
+
 /////////////REGISTER//////////////////
 
 router.get('/register', auth.login, (req, res) => {
@@ -47,7 +49,7 @@ router.post('/register', async (req, res) => {
     req.body.password = hash
     if (req.body.permission == 1) {
         var now = moment().unix()
-        req.body.premium_time = now + config.premium_time.dates * 24 * 60 * 60
+        req.body.premium_time = now + config.premium_time.dates * OneDayInSeconds
     }
     console.log(req.body)
     await usersModel.create(req.body)

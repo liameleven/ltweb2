@@ -31,6 +31,12 @@ module.exports = {
     create: (user) => {
         return db.add(TBL_USERS, user)
     },
+    updatePremiumTime: (entity, uid) => {
+        const condition = {
+            uid: uid,
+        }
+        return db.patch(TBL_USERS, entity, condition)
+    },
     /////////
     getbyCode: async (otp) => {
         const query = `select * from ${TBL_USERS} where otp = '${otp}'`

@@ -1,10 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const moment = require('moment')
+const config = require('../config/config.json')
 const userModel = require('../model/users.model')
 const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
+
+const OneDayInSeconds = 60 * 60 * 24
 
 ////////////ADMIN-CATEGORY//////////////
 
@@ -169,7 +172,7 @@ router.get('/tag-name/delete', async (req, res) => {
 router.get('/subscriber', async (req, res) => {
     const users = await userModel.getListByPermission(userModel.Subscriber)
     users.forEach(user => {
-        var now = moment.now()
+        var now = moment().unix()
         if (user.premium_time < now) {
             user.expired = true
         }
@@ -184,13 +187,27 @@ router.get('/subscriber', async (req, res) => {
         }
         var birthday = moment(user.birthday).format("DD-MM-YYYY")
         user.birthday = birthday
-        var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm:ss")
+        var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm")
         user.premium_time = premium_time
     })
     res.render('dashboard/user/subscriber', {
         layout: 'admin-dashboard.hbs',
         users
     })
+})
+
+router.get('/subscriber/extend', async (req, res) => {
+    if (!req.query.uid) {
+        return res.redirect('/dashboard')
+    }
+    var premium_time = moment().unix() + config.premium_time.dates * OneDayInSeconds
+    const entity = {
+        premium_time: premium_time
+    }
+    console.log(entity)
+    console.log(req.query.uid)
+    await userModel.update(entity, req.query.uid)
+    res.redirect('back')
 })
 
 router.get('/writer', async (req, res) => {
