@@ -6,7 +6,7 @@ const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
 
-////////////ADMIN//////////////
+////////////ADMIN-CATEGORY//////////////
 
 router.get('/', (req, res) => {
     res.render('layouts/admin-dashboard', {
@@ -119,7 +119,7 @@ router.post('/small-category/add', async (req, res) => {
     res.redirect('/dashboard/small-category')
 })
 
-////////TAG-NAME/////////////////////
+////////ADMIN-TAG-NAME/////////////////////
 router.get('/tag-name', async (req, res) => {
     var tag = await tagModel.getAll()
     res.render('dashboard/tag/tag-name', {
@@ -164,7 +164,7 @@ router.get('/tag-name/delete', async (req, res) => {
 })
 
 
-///////////USERS//////////////
+///////////ADMIN-USERS//////////////
 
 router.get('/subscriber', async (req, res) => {
     const users = await userModel.getListByPermission(userModel.Subscriber)
