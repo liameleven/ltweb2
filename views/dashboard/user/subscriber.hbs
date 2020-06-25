@@ -54,23 +54,24 @@
         </div>
         <!-- /.table-responsive -->
     </div>
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item {{#unless can_go_pre}}disabled{{/unless}}">
-                <a class="page-link" href="/dashboard/subscriber?page={{prev_value}}" tabindex="-1"
-                    aria-disabled="true">Previous</a>
-            </li>
-            {{#each page_items}}
-            <li class="page-item"><a class="page-link" href="/dashboard/subscriber?page={{value}}">{{value}}</a>
-            </li>
-            {{/each}}
-            <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
-                <a class="page-link" href="/dashboard/subscriber?page={{next_value}}">Next</a>
-            </li>
-        </ul>
-    </nav>
     <!-- /.card-body -->
     <div class="card-footer clearfix">
+        <nav aria-label="...">
+            <ul class="pagination d-flex justify-content-center" >
+                <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
+                    <a class="page-link" href="/dashboard/subscriber?page={{prev_value}}" tabindex="-1"
+                        aria-disabled="true">Previous</a>
+                </li>
+                {{#each page_items}}
+                <li class="page-item {{#if isActive}}active{{/if}}"><a class="page-link"
+                        href="/dashboard/subscriber?page={{value}}">{{value}}</a>
+                </li>
+                {{/each}}
+                <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
+                    <a class="page-link" href="/dashboard/subscriber?page={{next_value}}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
     <!-- /.card-footer -->
 </div>
