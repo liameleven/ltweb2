@@ -177,7 +177,7 @@ router.get('/subscriber', async (req, res) => {
     var total = await userModel.countbyPermission(userModel.Subscriber)
     const nPages = Math.ceil(total / config.pagination.limit)
     const page_items = []
-    
+
     if (page == 1) {
         for (let i = 1; i <= page + 1 && i <= nPages; i++) {
             const item = {
@@ -196,6 +196,25 @@ router.get('/subscriber', async (req, res) => {
             page_items.push(item)
         }
     }
+    users.forEach(user => {
+        var now = moment().unix()
+        if (user.premium_time < now) {
+            user.expired = true
+        }
+        if (user.premium_time >= now) {
+            user.expired = false
+        }
+        if (user.gender == userModel.Male) {
+            user.gender = "Male"
+        }
+        if (user.gender == userModel.Female) {
+            user.gender = "Female"
+        }
+        var birthday = moment(user.birthday).format("DD-MM-YYYY")
+        user.birthday = birthday
+        var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm")
+        user.premium_time = premium_time
+    })
     res.render('dashboard/user/subscriber', {
         layout: 'admin-dashboard.hbs',
         users,
@@ -215,8 +234,6 @@ router.get('/subscriber/extend', async (req, res) => {
     const entity = {
         premium_time: premium_time
     }
-    console.log(entity)
-    console.log(req.query.uid)
     await userModel.update(entity, req.query.uid)
     res.redirect('back')
 })
