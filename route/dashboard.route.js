@@ -170,7 +170,32 @@ router.get('/tag-name/delete', async (req, res) => {
 ///////////ADMIN-USERS//////////////
 
 router.get('/subscriber', async (req, res) => {
-    const users = await userModel.getListByPermission(userModel.Subscriber)
+    const page = +req.query.page || 1;
+    if (page < 0) page = 1
+    var offset = (page - 1) * config.pagination.limit
+    var users = await userModel.pagebyPermission(userModel.Subscriber, config.pagination.limit, offset)
+    var total = await userModel.countbyPermission(userModel.Subscriber)
+    const nPages = Math.ceil(total / config.pagination.limit)
+    const page_items = []
+
+    if (page == 1) {
+        for (let i = 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
+    else {
+        for (let i = page - 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
     users.forEach(user => {
         var now = moment().unix()
         if (user.premium_time < now) {
@@ -192,7 +217,12 @@ router.get('/subscriber', async (req, res) => {
     })
     res.render('dashboard/user/subscriber', {
         layout: 'admin-dashboard.hbs',
-        users
+        users,
+        page_items,
+        prev_value: page - 1,
+        next_value: page + 1,
+        can_go_prev: page > 1,
+        can_go_next: page < nPages
     })
 })
 
@@ -204,8 +234,6 @@ router.get('/subscriber/extend', async (req, res) => {
     const entity = {
         premium_time: premium_time
     }
-    console.log(entity)
-    console.log(req.query.uid)
     await userModel.update(entity, req.query.uid)
     res.redirect('back')
 })
