@@ -239,7 +239,32 @@ router.get('/subscriber/extend', async (req, res) => {
 })
 
 router.get('/writer', async (req, res) => {
-    const users = await userModel.getListByPermission(userModel.Writer)
+    const page = +req.query.page || 1;
+    if (page < 0) page = 1
+    var offset = (page - 1) * config.pagination.limit
+    var users = await userModel.pagebyPermission(userModel.Writer, config.pagination.limit, offset)
+    var total = await userModel.countbyPermission(userModel.Subscriber)
+    const nPages = Math.ceil(total / config.pagination.limit)
+    const page_items = []
+
+    if (page == 1) {
+        for (let i = 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
+    else {
+        for (let i = page - 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
     users.forEach(user => {
         if (user.gender == userModel.Male) {
             user.gender = "Male"
@@ -257,7 +282,32 @@ router.get('/writer', async (req, res) => {
 })
 
 router.get('/editor', async (req, res) => {
-    const users = await userModel.getListByPermission(userModel.Editor)
+    const page = +req.query.page || 1;
+    if (page < 0) page = 1
+    var offset = (page - 1) * config.pagination.limit
+    var users = await userModel.pagebyPermission(userModel.Editor, config.pagination.limit, offset)
+    var total = await userModel.countbyPermission(userModel.Subscriber)
+    const nPages = Math.ceil(total / config.pagination.limit)
+    const page_items = []
+
+    if (page == 1) {
+        for (let i = 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
+    else {
+        for (let i = page - 1; i <= page + 1 && i <= nPages; i++) {
+            const item = {
+                value: i,
+                isActive: i === page
+            }
+            page_items.push(item)
+        }
+    }
     users.forEach(user => {
         if (user.gender == userModel.Male) {
             user.gender = "Male"
