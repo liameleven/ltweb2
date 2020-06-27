@@ -6,14 +6,30 @@ const userModel = require('../model/users.model')
 const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
+const managerModel = require('../model/manager.model')
 const postModel = require('../model/post.model')
 const OneDayInSeconds = 60 * 60 * 24
 const auth = require('../middlewares/auth.mdw')
 
+router.get('/', (req, res) => {
+    if (req.session.authUser.permission == userModel.Subscriber) {
+        res.redirect('/dashboard/subscriber')
+    }
+    if (req.session.authUser.permission == userModel.Admin) {
+        res.redirect('/dashboard/admin')
+    }
+    if (req.session.authUser.permission == userModel.Writer) {
+        res.redirect('/dashboard/writer')
+    }
+    if (req.session.authUser.permission == userModel.Editor) {
+        res.redirect('/dashboard/editor')
+    }
+})
+
 ////////////ADMIN////////////
-router.get('/admin', auth.isAdmin, (req, res) => {
-    return res.render('layouts/admin-dashboard', {
-        layout: 'admin-dashboard.hbs',
+router.get('/admin', (req, res) => {
+    res.render('layouts/admin-dashboard', {
+        layout: false,
     })
 })
 
@@ -326,22 +342,58 @@ router.get('/admin/editor', async (req, res) => {
         var birthday = moment(user.birthday).format("DD-MM-YYYY")
         user.birthday = birthday
     })
-    res.render('dashboard/user/editor', {
+    res.render('dashboard/user/editor/editor', {
         layout: 'admin-dashboard.hbs',
 
         users
     })
 })
+///////////////ADMIN-Manager-Editor/////////////////
+router.get('/admin/editor/manager-editor', auth.isAdmin, async (req, res) => {
+    var manager = await managerModel.getListByIDManager(req.query.uid)
+    var uid = req.query.uid
+    res.render('dashboard/user/editor/manager-editor', {
+        layout: 'admin-dashboard.hbs',
+        manager,
+        uid
+    })
+})
+
+router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
+    var editors = await managerModel.getByID(req.query.uid)
+    var bigCategories = await bigCategoryModel.getAll()
+
+    for (let i = 0; i < bigCategories.length; i++) {
+        for (let j = 0; j < editors.length; j++) {
+            if (bigCategories[i].bid === editors[j].bid) {
+                bigCategories[i].choose = false
+                break
+            }
+            bigCategories[i].choose = true
+        }
+    }
+    
+    res.render('dashboard/user/editor/add-manager-editor', {
+        layout: 'admin-dashboard.hbs',
+        bigCategories
+    })
+})
+
+router.post('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
+    await managerModel.create(req.body)
+    res.redirect('/dashboard/user/editor/manager-editor')
+})
+
 
 ////////////////POST///////////////////
 
-router.get('/writer/post/write', (req, res) => {
+router.get('/writer/post/write', auth.isWriter, (req, res) => {
     res.render('dashboard/post/post', {
         layout: 'admin-dashboard.hbs'
     })
 })
 
-router.post('/admin/post/write', async (req, res) => {
+router.post('/writer/post/write', auth.isWriter, async (req, res) => {
     console.log(req.body)
     if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
         return res.render('back', {
@@ -357,7 +409,6 @@ router.post('/admin/post/write', async (req, res) => {
     }
     await postModel.add(entity)
     res.render('OK')
-
 })
 
 module.exports = router

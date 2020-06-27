@@ -15,21 +15,6 @@ require('./middlewares/session.mdw')(app)
 app.use('/account', auth.login, require('./route/account.route'))
 app.use('/dashboard', auth.notLogin, require('./route/dashboard.route'))
 
-app.get('/dashboard', auth.notLogin, (req, res) => {
-    if (req.session.authUser.permission == userModel.Subscriber) {
-        res.redirect('/dashboard/subscriber')
-    }
-    if (req.session.authUser.permission == userModel.Admin) {
-        res.redirect('/dashboard/admin')
-    }
-    if (req.session.authUser.permission == userModel.Writer) {
-        res.redirect('/dashboard/writer')
-    }
-    if (req.session.authUser.permission == userModel.Editor) {
-        res.redirect('/dashboard/editor')
-    }
-})
-
 app.use((req, res) => {
     res.send('404')
 })
