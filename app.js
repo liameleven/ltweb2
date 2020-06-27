@@ -1,6 +1,7 @@
 const express = require('express')
-const exphbs = require('express-handlebars')
 const app = express()
+const auth = require('./middlewares/auth.mdw')
+const userModel = require('./model/users.model')
 
 app.use('/public', express.static('public'))
 
@@ -11,8 +12,12 @@ app.use(express.urlencoded({
 require('./middlewares/view.mdw')(app)
 require('./middlewares/session.mdw')(app)
 
-app.use('/account', require('./route/account.route'))
-app.use('/dashboard', require('./route/dashboard.route'))
+app.use('/account', auth.login, require('./route/account.route'))
+app.use('/dashboard', auth.notLogin, require('./route/dashboard.route'))
+
+app.use((req, res) => {
+    res.send('404')
+})
 
 const PORT = 3000
 app.listen(PORT, () => {

@@ -7,18 +7,35 @@ const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
 const managerModel = require('../model/manager.model')
-
+const postModel = require('../model/post.model')
 const OneDayInSeconds = 60 * 60 * 24
-
-////////////ADMIN-CATEGORY//////////////
+const auth = require('../middlewares/auth.mdw')
 
 router.get('/', (req, res) => {
-    res.render('layouts/admin-dashboard', {
-        layout: false,
+    if (req.session.authUser.permission == userModel.Subscriber) {
+        res.redirect('/dashboard/subscriber')
+    }
+    if (req.session.authUser.permission == userModel.Admin) {
+        res.redirect('/dashboard/admin')
+    }
+    if (req.session.authUser.permission == userModel.Writer) {
+        res.redirect('/dashboard/writer')
+    }
+    if (req.session.authUser.permission == userModel.Editor) {
+        res.redirect('/dashboard/editor')
+    }
+})
+
+////////////ADMIN////////////
+router.get('/admin', auth.isAdmin, (req, res) => {
+    return res.render('layouts/admin-dashboard', {
+        layout: 'admin-dashboard.hbs',
     })
 })
 
-router.get('/big-category', async (req, res) => {
+////////////ADMIN-CATEGORY//////////////
+
+router.get('/admin/big-category', auth.isAdmin, async (req, res) => {
     var categories = await bigCategoryModel.getAll()
     res.render('dashboard/category/big-category', {
         layout: 'admin-dashboard.hbs',
@@ -26,34 +43,34 @@ router.get('/big-category', async (req, res) => {
     })
 })
 
-router.get('/big-category/edit', async (req, res) => {
+router.get('/admin/big-category/edit', auth.isAdmin, async (req, res) => {
     if (req.query.bid === '') {
         res.redirect('/dashboard')
     }
     var category = await bigCategoryModel.getByID(req.query.bid)
-    res.render('dashboard/category/edit-big-category', {
+    res.render('dashboard/admin/category/edit-big-category', {
         layout: 'admin-dashboard.hbs',
         category
     })
 })
 
-router.post('/big-category/edit', async (req, res) => {
+router.post('/admin/big-category/edit', auth.isAdmin, async (req, res) => {
     await bigCategoryModel.update(req.body)
-    res.redirect('/dashboard/big-category')
+    res.redirect('/dashboard/admin/big-category')
 })
 
-router.get('/big-category/add', (req, res) => {
+router.get('/admin/big-category/add', auth.isAdmin, (req, res) => {
     res.render('dashboard/category/add-big-category', {
         layout: 'admin-dashboard.hbs',
     })
 })
 
-router.post('/big-category/add', async (req, res) => {
+router.post('/admin/big-category/add', auth.isAdmin, async (req, res) => {
     await bigCategoryModel.create(req.body)
-    res.redirect('/dashboard/big-category')
+    res.redirect('/dashboard/admin/big-category')
 })
 
-router.get('/big-category/delete', async (req, res) => {
+router.get('/admin/big-category/delete', auth.isAdmin, async (req, res) => {
     if (!req.query.id) {
         return res.redirect('/dashboard')
     }
@@ -61,7 +78,7 @@ router.get('/big-category/delete', async (req, res) => {
     res.redirect('back')
 })
 
-router.get('/small-category', async (req, res) => {
+router.get('/admin/small-category', auth.isAdmin, async (req, res) => {
     var smallCategories = await smallCategoryModel.getAll()
     var bigCategories = await bigCategoryModel.getAll()
     var mapBigCate = new Map()
@@ -77,7 +94,7 @@ router.get('/small-category', async (req, res) => {
     })
 })
 
-router.get('/small-category/edit', async (req, res) => {
+router.get('/admin/small-category/edit', auth.isAdmin, async (req, res) => {
     if (!req.query.id) {
         return res.redirect('/dashboard')
     }
@@ -97,12 +114,12 @@ router.get('/small-category/edit', async (req, res) => {
     })
 })
 
-router.post('/small-category/edit', async (req, res) => {
+router.post('/admin/small-category/edit', auth.isAdmin, async (req, res) => {
     await smallCategoryModel.update(req.body)
     res.redirect('/dashboard/small-category')
 })
 
-router.get('/small-category/delete', async (req, res) => {
+router.get('/admin/small-category/delete', auth.isAdmin, async (req, res) => {
     if (!req.query.id) {
         return res.redirect('/dashboard')
     }
@@ -110,7 +127,7 @@ router.get('/small-category/delete', async (req, res) => {
     res.redirect('back')
 })
 
-router.get('/small-category/add', async (req, res) => {
+router.get('/admin/small-category/add', auth.isAdmin, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     res.render('dashboard/category/add-small-category', {
         layout: 'admin-dashboard.hbs',
@@ -118,13 +135,13 @@ router.get('/small-category/add', async (req, res) => {
     })
 })
 
-router.post('/small-category/add', async (req, res) => {
+router.post('/admin/small-category/add', async (req, res) => {
     await smallCategoryModel.create(req.body)
     res.redirect('/dashboard/small-category')
 })
 
 ////////ADMIN-TAG-NAME/////////////////////
-router.get('/tag-name', async (req, res) => {
+router.get('/admin/tag-name', auth.isAdmin, async (req, res) => {
     var tag = await tagModel.getAll()
     res.render('dashboard/tag/tag-name', {
         layout: 'admin-dashboard.hbs',
@@ -132,18 +149,19 @@ router.get('/tag-name', async (req, res) => {
     })
 })
 
-router.get('/tag-name/add', (req, res) => {
+router.get('/admin/tag-name/add', auth.isAdmin, (req, res) => {
     res.render('dashboard/tag/add-tag-name', {
         layout: 'admin-dashboard.hbs',
     })
 })
 
-router.post('/tag-name/add', async (req, res) => {
+router.post('/admin/tag-name/add', auth.isAdmin, async (req, res) => {
     await tagModel.create(req.body)
     res.redirect('/dashboard/tag-name')
 })
 
-router.get('/tag-name/edit', async (req, res) => {
+router.get('/admin/tag-name/edit', auth.isAdmin, async (req, res) => {
+
     if (!req.query.id) {
         res.redirect('/dashboard')
     }
@@ -154,15 +172,16 @@ router.get('/tag-name/edit', async (req, res) => {
     })
 })
 
-router.post('/tag-name/edit', async (req, res) => {
+router.post('/admin/tag-name/edit', auth.isAdmin, async (req, res) => {
     await tagModel.update(req.body)
     res.redirect('/dashboard/tag-name')
 })
 
-router.get('/tag-name/delete', async (req, res) => {
+router.get('/admin/tag-name/delete', auth.isAdmin, async (req, res) => {
     if (!req.query.id) {
         return res.redirect('/dashboard')
     }
+
     await tagModel.delete(req.query.id)
     res.redirect('back')
 })
@@ -170,7 +189,7 @@ router.get('/tag-name/delete', async (req, res) => {
 
 ///////////ADMIN-USERS//////////////
 
-router.get('/subscriber', async (req, res) => {
+router.get('/admin/subscriber', auth.isAdmin, async (req, res) => {
     const page = +req.query.page || 1;
     if (page < 0) page = 1
     var offset = (page - 1) * config.pagination.limit
@@ -197,6 +216,7 @@ router.get('/subscriber', async (req, res) => {
             page_items.push(item)
         }
     }
+
     users.forEach(user => {
         var now = moment().unix()
         if (user.premium_time < now) {
@@ -211,11 +231,13 @@ router.get('/subscriber', async (req, res) => {
         if (user.gender == userModel.Female) {
             user.gender = "Female"
         }
+
         var birthday = moment(user.birthday).format("DD-MM-YYYY")
         user.birthday = birthday
         var premium_time = moment.unix(user.premium_time).format("DD-MM-YYYY  hh:mm")
         user.premium_time = premium_time
     })
+
     res.render('dashboard/user/subscriber', {
         layout: 'admin-dashboard.hbs',
         users,
@@ -227,19 +249,20 @@ router.get('/subscriber', async (req, res) => {
     })
 })
 
-router.get('/subscriber/extend', async (req, res) => {
+router.get('/admin/subscriber/extend-dashboard.hbs', async (req, res) => {
     if (!req.query.uid) {
         return res.redirect('/dashboard')
     }
     var premium_time = moment().unix() + config.premium_time.dates * OneDayInSeconds
     const entity = {
         premium_time: premium_time
+
     }
     await userModel.update(entity, req.query.uid)
     res.redirect('back')
 })
 
-router.get('/writer', async (req, res) => {
+router.get('/admin/writer', async (req, res) => {
     const page = +req.query.page || 1;
     if (page < 0) page = 1
     var offset = (page - 1) * config.pagination.limit
@@ -282,7 +305,7 @@ router.get('/writer', async (req, res) => {
     })
 })
 
-router.get('/editor', async (req, res) => {
+router.get('/admin/editor', async (req, res) => {
     const page = +req.query.page || 1;
     if (page < 0) page = 1
     var offset = (page - 1) * config.pagination.limit
@@ -321,6 +344,7 @@ router.get('/editor', async (req, res) => {
     })
     res.render('dashboard/user/editor/editor', {
         layout: 'admin-dashboard.hbs',
+
         users
     })
 })
@@ -351,6 +375,32 @@ router.post('/editor/manager-editor/add', async (req, res) => {
     res.redirect('/dashboard/user/editor/manager-editor')
 })
 
+
+////////////////POST///////////////////
+
+router.get('/writer/post/write', (req, res) => {
+    res.render('dashboard/post/post', {
+        layout: 'admin-dashboard.hbs'
+    })
+})
+
+router.post('/admin/post/write', async (req, res) => {
+    console.log(req.body)
+    if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
+        return res.render('back', {
+            layout: 'admin-dashboard.hbs',
+            err: "You must fill all text box"
+        })
+    const entity = {
+        title: req.body.title,
+        summary: req.body.summary,
+        content: req.body.content,
+        bid: req.body.bid,
+        sid: req.body.sid
+    }
+    await postModel.add(entity)
+    res.render('OK')
+})
 
 module.exports = router
 

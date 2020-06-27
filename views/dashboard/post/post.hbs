@@ -1,0 +1,82 @@
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#txtFullDes',
+        height: 450,
+        plugins: 'paste image link autolink lists table media',
+        menubar: false,
+        toolbar: [
+            'undo redo | bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright | forecolor backcolor | table link image media',
+        ],
+    });
+</script>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Write Post</h3>
+        <a class="btn btn-success btn-sm" href="/dashboard/tag-name/add" role="button" title="Edit Tag"
+            style="float: right;">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+    </div>
+    <form method="post" action="/dashboard/post/write">
+        <div class="card-body">
+            <div class="col-sm-12">
+                <div class="form-group row">Premium
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Title</div>
+                        </div>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">﻿​
+                            <div class="input-group-text">Summary</div>
+                        </div>
+                        <input type="text" class="form-control" id="summary" name="summary">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for=""></label>
+                    <textarea name="content" id="txtFullDes" class="form-control" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Big Category</div>
+                        </div>
+                        <select class="form-control select2 select2-danger select2-hidden-accessible"
+                            data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
+                            tabindex="-1" aria-hidden="true" name="bid">
+                            <option selected value="1" data-select2-id="14">Test</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Small Category</div>
+                        </div>
+                        <select class="form-control select2 select2-danger select2-hidden-accessible"
+                            data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
+                            tabindex="-1" aria-hidden="true" name="sid">
+                            <option selected value="2" data-select2-id="14">Test</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="1"
+                            name="premium">
+                        <label for="customCheckbox1" class="custom-control-label">Premium</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-lg btn-success btn-block">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
