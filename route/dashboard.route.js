@@ -10,6 +10,21 @@ const postModel = require('../model/post.model')
 const OneDayInSeconds = 60 * 60 * 24
 const auth = require('../middlewares/auth.mdw')
 
+router.get('/', (req, res) => {
+    if (req.session.authUser.permission == userModel.Subscriber) {
+        res.redirect('/dashboard/subscriber')
+    }
+    if (req.session.authUser.permission == userModel.Admin) {
+        res.redirect('/dashboard/admin')
+    }
+    if (req.session.authUser.permission == userModel.Writer) {
+        res.redirect('/dashboard/writer')
+    }
+    if (req.session.authUser.permission == userModel.Editor) {
+        res.redirect('/dashboard/editor')
+    }
+})
+
 ////////////ADMIN////////////
 router.get('/admin', auth.isAdmin, (req, res) => {
     return res.render('layouts/admin-dashboard', {
@@ -357,7 +372,6 @@ router.post('/admin/post/write', async (req, res) => {
     }
     await postModel.add(entity)
     res.render('OK')
-
 })
 
 module.exports = router
