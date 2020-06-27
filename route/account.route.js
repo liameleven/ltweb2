@@ -73,7 +73,7 @@ router.post('/login', async function (req, res) {
         const rs = bcrypt.compareSync(req.body.password, user.password);
 
         if (!rs) {
-            res.render('account/login', {
+            return res.render('account/login', {
                 layout: false,
                 err: 'Your Email Or Password Is Invalid'
             });
@@ -83,8 +83,7 @@ router.post('/login', async function (req, res) {
         req.session.isAuthenticated = true;
         req.session.authUser = user;
 
-        const url = req.query.retUrl || '/';
-        res.redirect(url);
+        return res.redirect('/dashboard')
     }
     res.render('account/login', {
         layout: false,

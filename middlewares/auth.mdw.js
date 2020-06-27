@@ -3,32 +3,32 @@ const userModel = require('../model/users.model')
 module.exports = {
   notLogin: (req, res, next) => {
     if (!req.session.isAuthenticated) {
-      return res.redirect(`/account/login?retUrl=${req.originalUrl}`)
+      return res.redirect(`/account/login`)
     }
     next()
   },
   login: (req, res, next) => {
     if (req.session.isAuthenticated) {
-      return res.redirect(`../index`)
+      return res.redirect('/dashboard')
     }
     next()
   },
   isAdmin: (req, res, next) => {
-    if (req.session.isAuthenticated && req.session.authUser == userModel.Admin) {
-      next()
+    if (req.session.authUser.permission != userModel.Admin) {
+      return res.redirect('/dashboard')
     }
-    return res.redirect(`../index`)
+    next()
   },
   isSubscriber: (req, res, next) => {
-    if (req.session.isAuthenticated && req.session.authUser == userModel.Subscriber) {
-      next()
+    if (req.session.authUser.permission != userModel.Subscriber) {
+      return res.redirect('/dashboard')
     }
-    return res.redirect(`../index`)
+    next()
   },
   isWriter: (req, res, next) => {
-    if (req.session.isAuthenticated && req.session.authUser == userModel.Writer) {
-      next()
+    if (req.session.authUser.permission != userModel.Writer) {
+      return res.redirect('/dashboard')
     }
-    return res.redirect(`../index`)
+    next()
   }
 }
