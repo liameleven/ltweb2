@@ -27,9 +27,9 @@ router.get('/', (req, res) => {
 })
 
 ////////////ADMIN////////////
-router.get('/admin', auth.isAdmin, (req, res) => {
-    return res.render('layouts/admin-dashboard', {
-        layout: 'admin-dashboard.hbs',
+router.get('/admin', (req, res) => {
+    res.render('layouts/admin-dashboard', {
+        layout: false,
     })
 })
 
@@ -348,8 +348,8 @@ router.get('/admin/editor', async (req, res) => {
         users
     })
 })
-///////////////Manager-Editor/////////////////
-router.get('/editor/manager-editor', async (req, res) => {
+///////////////ADMIN-Manager-Editor/////////////////
+router.get('/admin/editor/manager-editor', auth.isAdmin, async (req, res) => {
     var manager = await managerModel.getListByIDManager(req.query.uid)
     var uid = req.query.uid
     res.render('dashboard/user/editor/manager-editor', {
@@ -359,18 +359,27 @@ router.get('/editor/manager-editor', async (req, res) => {
     })
 })
 
-router.get('/editor/manager-editor/add', async (req, res) => {
+router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
     var editors = await managerModel.getByID(req.query.uid)
     var bigCategories = await bigCategoryModel.getAll()
-    console.log(editors)
-    console.log(bigCategories)
+
+    for (let i = 0; i < bigCategories.length; i++) {
+        for (let j = 0; j < editors.length; j++) {
+            if (bigCategories[i].bid === editors[j].bid) {
+                bigCategories[i].choose = false
+                break
+            }
+            bigCategories[i].choose = true
+        }
+    }
+    
     res.render('dashboard/user/editor/add-manager-editor', {
         layout: 'admin-dashboard.hbs',
         bigCategories
     })
 })
 
-router.post('/editor/manager-editor/add', async (req, res) => {
+router.post('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
     await managerModel.create(req.body)
     res.redirect('/dashboard/user/editor/manager-editor')
 })
@@ -378,13 +387,13 @@ router.post('/editor/manager-editor/add', async (req, res) => {
 
 ////////////////POST///////////////////
 
-router.get('/writer/post/write', (req, res) => {
+router.get('/writer/post/write', auth.isWriter, (req, res) => {
     res.render('dashboard/post/post', {
         layout: 'admin-dashboard.hbs'
     })
 })
 
-router.post('/admin/post/write', async (req, res) => {
+router.post('/writer/post/write', auth.isWriter, async (req, res) => {
     console.log(req.body)
     if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
         return res.render('back', {

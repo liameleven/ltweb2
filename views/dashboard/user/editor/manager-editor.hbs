@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header border-transparent">
         <h3 class="card-title">Manager Editor</h3>
-        <a class="btn btn-success btn-sm" href="/dashboard/editor/manager-editor/add?uid={{uid}}" role="button"
+        <a class="btn btn-success btn-sm" href="/dashboard/admin/editor/manager-editor/add?uid={{uid}}" role="button"
             title="Edit Category" style="float: right;">
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
@@ -20,12 +20,14 @@
                     {{#each manager}}
                     <tr role="row" class="odd">
                         <td tabindex="0" class="sorting_1">{{name}}
-                            <a class="btn btn-danger btn-sm" href="/dashboard/editor/manager-editor/delete?uid={{uid}}"
-                                role="button" title="Delete Category" style="float: right;margin-left: 5px;">
+                            <a class="btn btn-danger btn-sm"
+                                href="/dashboard/admin/editor/manager-editor/delete?uid={{uid}}" role="button"
+                                title="Delete Category" style="float: right;margin-left: 5px;">
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                             </a>
-                            <a class="btn btn-primary btn-sm" href="/dashboard/editor/manager-editor/edit?uid={{uid}}"
-                                role="button" title="Edit Category" style="float: right;">
+                            <a class="btn btn-primary btn-sm"
+                                href="/dashboard/admin/editor/manager-editor/edit?uid={{uid}}" role="button"
+                                title="Edit Category" style="float: right;">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
