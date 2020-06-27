@@ -35,7 +35,12 @@
                         <td>{{email}}</td>
                         <td>{{birthday}}</td>
                         <td>{{gender}}</td>
-                        <td>{{phone}}</td>
+                        <td>{{phone}}
+                            <a class="btn btn-primary btn-sm" href="/dashboard/editor/manager-editor?uid={{uid}}"
+                                role="button" title="Manager Editor" style="float: right;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>

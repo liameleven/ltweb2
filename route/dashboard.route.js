@@ -6,6 +6,7 @@ const userModel = require('../model/users.model')
 const bigCategoryModel = require('../model/big-category.model')
 const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
+const managerModel = require('../model/manager.model')
 
 const OneDayInSeconds = 60 * 60 * 24
 
@@ -318,11 +319,38 @@ router.get('/editor', async (req, res) => {
         var birthday = moment(user.birthday).format("DD-MM-YYYY")
         user.birthday = birthday
     })
-    res.render('dashboard/user/editor', {
+    res.render('dashboard/user/editor/editor', {
         layout: 'admin-dashboard.hbs',
         users
     })
 })
+///////////////Manager-Editor/////////////////
+router.get('/editor/manager-editor', async (req, res) => {
+    var manager = await managerModel.getListByIDManager(req.query.uid)
+    var uid = req.query.uid
+    res.render('dashboard/user/editor/manager-editor', {
+        layout: 'admin-dashboard.hbs',
+        manager,
+        uid
+    })
+})
+
+router.get('/editor/manager-editor/add', async (req, res) => {
+    var editors = await managerModel.getByID(req.query.uid)
+    var bigCategories = await bigCategoryModel.getAll()
+    console.log(editors)
+    console.log(bigCategories)
+    res.render('dashboard/user/editor/add-manager-editor', {
+        layout: 'admin-dashboard.hbs',
+        bigCategories
+    })
+})
+
+router.post('/editor/manager-editor/add', async (req, res) => {
+    await managerModel.create(req.body)
+    res.redirect('/dashboard/user/editor/manager-editor')
+})
+
 
 module.exports = router
 
