@@ -12,6 +12,14 @@ app.use(express.urlencoded({
 require('./middlewares/view.mdw')(app)
 require('./middlewares/session.mdw')(app)
 
+///////////LOGOUT////////////
+
+app.get('/logout', (req, res) => {
+    req.session.isAuthenticated = false
+    req.session.authUser = null
+    res.redirect('/account/login')
+})
+
 app.use('/account', auth.login, require('./route/account.route'))
 app.use('/dashboard', auth.notLogin, require('./route/dashboard.route'))
 

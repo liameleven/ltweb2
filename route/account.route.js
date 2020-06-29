@@ -108,8 +108,8 @@ async function sendmail(to_email, name, otp) {
         from: 'tintran113114115@gmail.com', // sender address // random ma sao m
         to: to_email, // list of receivers
         subject: "Ma xac nhan", // Subject line
-        text: `Dear ${name} You have selected from LTWEB2@gmail.com as your new verification page: ${otp} this code will expire three hours after email was send Why you received this email apple requires varification whenever an email address If you did not make this request, you can ignore this email`,
-        html: `Dear ${name} <br> You have selected from LTWEB2@gmail.com as your new verification page: <br><h2> ${otp} </h2>  This code will expire three hours after email was send <br> Why you received this email apple requires varification whenever an email address <br> If you did not make this request, you can ignore this email http://localhost:3000/accounts/login`,
+        text: `Dear ${name} You have selected from LTWEB2@gmail.com as your new verification page: ${otp} this code will expire three hours after email was send Why you received this email apple requires verification whenever an email address If you did not make this request, you can ignore this email`,
+        html: `Dear ${name} <br> You have selected from LTWEB2@gmail.com as your new verification page: <br><h2> ${otp} </h2>  This code will expire three hours after email was send <br> Why you received this email apple requires verification whenever an email address <br> If you did not make this request, you can ignore this email`,
     });
     console.log("Message sent: %s", info.messageId);
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
