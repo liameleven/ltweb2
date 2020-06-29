@@ -34,7 +34,7 @@
 			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
 				<form class="login100-form validate-form" method="POST" action="">
 					<span class="login100-form-title p-b-33">
-						CHECK OTP   
+						Check OTP   
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Valid OTP is required: 123456">
@@ -45,9 +45,11 @@
 					{{#if err}}
                         <p style="color: red;">{{err}}</p>
                     {{/if}}
-					<div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" id="btnSubmit" type="submit">Check</button>
-                    </div>
+					<div class="container-login100-form-btn m-t-20">
+						<button class="login100-form-btn">
+							Submit
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>
