@@ -42,7 +42,7 @@
                         <td>{{phone}}</td>
                         <td>{{premium_time}}
                             {{#if expired}}
-                            <a class="btn btn-primary btn-sm" href="/dashboard/subscriber/extend?uid={{uid}}"
+                            <a class="btn btn-primary btn-sm" href="/dashboard/admin/subscriber/extend?uid={{uid}}"
                                 style="float: right;">Extend</a>
                             <span class="badge badge-danger">Expired</span>
                             {{/if}}
@@ -59,16 +59,16 @@
         <nav aria-label="..." style="float: left;">
             <ul class="pagination d-flex justify-content-center" >
                 <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
-                    <a class="page-link" href="/dashboard/subscriber?page={{prev_value}}" tabindex="-1"
+                    <a class="page-link" href="/dashboard/admin/subscriber?page={{prev_value}}" tabindex="-1"
                         aria-disabled="true">Previous</a>
                 </li>
                 {{#each page_items}}
                 <li class="page-item {{#if isActive}}active{{/if}}"><a class="page-link"
-                        href="/dashboard/subscriber?page={{value}}">{{value}}</a>
+                        href="/dashboard/admin/subscriber?page={{value}}">{{value}}</a>
                 </li>
                 {{/each}}
                 <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
-                    <a class="page-link" href="/dashboard/subscriber?page={{next_value}}">Next</a>
+                    <a class="page-link" href="/dashboard/admin/subscriber?page={{next_value}}">Next</a>
                 </li>
             </ul>
         </nav>

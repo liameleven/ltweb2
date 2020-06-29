@@ -1,0 +1,57 @@
+<div class="card">
+    <div class="card-header border-transparent">
+        <h3 class="card-title">Posts</h3>
+        <a class="btn btn-success btn-sm" href="/dashboard/writer/post/write" role="button" title="Edit Category"
+            style="float: right;">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table m-0">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">ID
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Title
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Status
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Premium
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Big Category
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Small Category
+                        </th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">View
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each posts}}
+                    <tr role="row" class="odd">
+                        <td tabindex="0" class="sorting_1">{{id}}</td>
+                        <td>{{title}}</td>
+                        <td>{{{status}}}</td>
+                        {{#if premium}}
+                        <td><input type="checkbox" disabled="" checked></td>
+                        {{else}}
+                        <td><input type="checkbox" disabled=""></td>
+                        {{/if}}
+                        <td>{{bigCategoryName}}</td>
+                        <td>{{smallCategoryName}}</td>
+                        <td>{{view}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

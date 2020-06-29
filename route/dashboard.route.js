@@ -8,8 +8,9 @@ const smallCategoryModel = require('../model/small-category.model')
 const tagModel = require('../model/tag-name.model')
 const managerModel = require('../model/manager.model')
 const postModel = require('../model/post.model')
-const OneDayInSeconds = 60 * 60 * 24
 const auth = require('../middlewares/auth.mdw')
+
+const OneDayInSeconds = 60 * 60 * 24
 
 router.get('/', (req, res) => {
     if (req.session.authUser.permission == userModel.Subscriber) {
@@ -26,10 +27,19 @@ router.get('/', (req, res) => {
     }
 })
 
+////////WRITER///////////////
+router.get('/writer', (req, res) => {
+    res.render('layouts/writer-dashboard', {
+        layout: false,
+        userName: req.session.authUser.user_name
+    })
+})
+
 ////////////ADMIN////////////
 router.get('/admin', (req, res) => {
     res.render('layouts/admin-dashboard', {
         layout: false,
+        userName: req.session.authUser.user_name
     })
 })
 
@@ -249,7 +259,7 @@ router.get('/admin/subscriber', auth.isAdmin, async (req, res) => {
     })
 })
 
-router.get('/admin/subscriber/extend-dashboard.hbs', async (req, res) => {
+router.get('/admin/subscriber/extend', async (req, res) => {
     if (!req.query.uid) {
         return res.redirect('/dashboard')
     }
@@ -305,6 +315,8 @@ router.get('/admin/writer', async (req, res) => {
     })
 })
 
+///////////////ADMIN-Manager-Editor/////////////////
+
 router.get('/admin/editor', async (req, res) => {
     const page = +req.query.page || 1;
     if (page < 0) page = 1
@@ -348,7 +360,7 @@ router.get('/admin/editor', async (req, res) => {
         users
     })
 })
-///////////////ADMIN-Manager-Editor/////////////////
+
 router.get('/admin/editor/manager-editor', auth.isAdmin, async (req, res) => {
     var manager = await managerModel.getListByIDManager(req.query.uid)
     var uid = req.query.uid
@@ -372,7 +384,7 @@ router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) =>
             bigCategories[i].choose = true
         }
     }
-    
+
     res.render('dashboard/user/editor/add-manager-editor', {
         layout: 'admin-dashboard.hbs',
         bigCategories
@@ -385,11 +397,35 @@ router.post('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) =
 })
 
 
-////////////////POST///////////////////
+////////////////WRITER-POST///////////////////
+
+router.get('/writer/post/list', auth.isWriter, async (req, res) => {
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    var posts = await postModel.getAll()
+    posts.forEach(post => {
+        post.status = postModel.parseStatusHTML(post.status)
+        bigCategories.forEach(big => {
+            if (post.bid === big.bid) {
+                post.bigCategoryName = big.name
+            }
+        })
+        smallCategories.forEach(small => {
+            if (post.sid === small.id) {
+                post.smallCategoryName = small.name
+            }
+        })
+    })
+    console.log(posts)
+    res.render('dashboard/post/list-post', {
+        layout: 'writer-dashboard.hbs',
+        posts
+    })
+})
 
 router.get('/writer/post/write', auth.isWriter, (req, res) => {
-    res.render('dashboard/post/post', {
-        layout: 'admin-dashboard.hbs'
+    res.render('dashboard/post/write-post', {
+        layout: 'writer-dashboard.hbs'
     })
 })
 
@@ -397,7 +433,7 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
     console.log(req.body)
     if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
         return res.render('back', {
-            layout: 'admin-dashboard.hbs',
+            layout: 'writer-dashboard.hbs',
             err: "You must fill all text box"
         })
     const entity = {
