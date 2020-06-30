@@ -58,7 +58,7 @@ router.get('/admin/big-category/edit', auth.isAdmin, async (req, res) => {
         res.redirect('/dashboard')
     }
     var category = await bigCategoryModel.getByID(req.query.bid)
-    res.render('dashboard/admin/category/edit-big-category', {
+    res.render('dashboard/category/edit-big-category', {
         layout: 'admin-dashboard.hbs',
         category
     })
