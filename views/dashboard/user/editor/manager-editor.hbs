@@ -21,15 +21,15 @@
                     <tr role="row" class="odd">
                         <td tabindex="0" class="sorting_1">{{name}}
                             <a class="btn btn-danger btn-sm"
-                                href="/dashboard/admin/editor/manager-editor/delete?uid={{uid}}" role="button"
-                                title="Delete Category" style="float: right;margin-left: 5px;">
+                                href="/dashboard/admin/editor/manager-editor/delete?id={{id}}"
+                                role="button" title="Delete Category" style="float: right;margin-left: 5px;">
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                             </a>
-                            <a class="btn btn-primary btn-sm"
+                            {{!-- <a class="btn btn-primary btn-sm"
                                 href="/dashboard/admin/editor/manager-editor/edit?uid={{uid}}" role="button"
                                 title="Edit Category" style="float: right;">
                                 <i class="fas fa-edit"></i>
-                            </a>
+                            </a> --}}
                         </td>
                     </tr>
                     {{/each}}

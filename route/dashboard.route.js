@@ -387,13 +387,19 @@ router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) =>
 
     res.render('dashboard/user/editor/add-manager-editor', {
         layout: 'admin-dashboard.hbs',
-        bigCategories
+        bigCategories,
+        uid: req.query.uid
     })
 })
 
 router.post('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
     await managerModel.create(req.body)
-    res.redirect('/dashboard/user/editor/manager-editor')
+    res.redirect(`/dashboard/admin/editor/manager-editor?uid=${req.body.uid}`)
+})
+
+router.get('/admin/editor/manager-editor/delete', auth.isAdmin, async (req, res) => {
+    await managerModel.delete(req.query)
+    res.redirect('back')
 })
 
 

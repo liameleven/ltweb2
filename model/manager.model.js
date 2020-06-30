@@ -12,9 +12,9 @@ module.exports = {
     create: function (entity) {
         return db.add(TBL_Manager, entity);
     },
-    delete: function (id) {
+    delete: function (entity) {
         const condition = {
-            bid: id
+            id: entity.id
         }
         return db.del(TBL_Manager, condition);
     },
@@ -26,7 +26,7 @@ module.exports = {
         return db.patch(TBL_Manager, entity, condition);
     },
     getListByIDManager: async function (uid) {
-        return db.load(`select m.uid,bc.name from ${TBL_Manager} m join ${TBL_BCategory} bc on m.bid=bc.bid where m.uid='${uid}'`);
+        return db.load(`select m.*,bc.name from ${TBL_Manager} m join ${TBL_BCategory} bc on m.bid=bc.bid where m.uid='${uid}'`);
     },
     getByID: async function (uid) {
         const query = `select * from ${TBL_Manager} where uid = '${uid}'`
