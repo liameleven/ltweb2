@@ -22,7 +22,7 @@ module.exports = {
         return rows[0];
     },
     getByPseudonym: async (pseudonym) => {
-        const query = `select * from ${TBL_USERS} where pseudonym = '${pseudonym}`
+        const query = `select * from ${TBL_USERS} where pseudonym = '${pseudonym}'`
         const rows = await db.load(query)
         if (rows.length === 0)
             return null;

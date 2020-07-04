@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const auth = require('./middlewares/auth.mdw')
-const userModel = require('./model/users.model')
 
 app.use('/public', express.static('public'))
 

@@ -422,7 +422,6 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
             }
         })
     })
-    console.log(posts)
     res.render('dashboard/post/list-post', {
         layout: 'writer-dashboard.hbs',
         posts
@@ -436,7 +435,6 @@ router.get('/writer/post/write', auth.isWriter, (req, res) => {
 })
 
 router.post('/writer/post/write', auth.isWriter, async (req, res) => {
-    console.log(req.body)
     if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
         return res.render('back', {
             layout: 'writer-dashboard.hbs',
