@@ -30,5 +30,11 @@ module.exports = {
       return res.redirect('/dashboard')
     }
     next()
+  },
+  isEditor: (req, res, next) => {
+    if (req.session.authUser.permission != userModel.Editor) {
+      return res.redirect('/dashboard')
+    }
+    next()
   }
 }

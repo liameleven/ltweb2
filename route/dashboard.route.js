@@ -34,7 +34,13 @@ router.get('/writer', (req, res) => {
         userName: req.session.authUser.user_name
     })
 })
-
+////////EDITOR///////////////
+router.get('/editor', (req, res) => {
+    res.render('layouts/editor-dashboard', {
+        layout: false,
+        userName: req.session.authUser.user_name
+    })
+})
 ////////////ADMIN////////////
 router.get('/admin', (req, res) => {
     res.render('layouts/admin-dashboard', {
@@ -374,7 +380,8 @@ router.get('/admin/editor/manager-editor', auth.isAdmin, async (req, res) => {
 router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) => {
     var editors = await managerModel.getByID(req.query.uid)
     var bigCategories = await bigCategoryModel.getAll()
-
+    bigCategories.forEach(e =>
+        e.choose = true)
     for (let i = 0; i < bigCategories.length; i++) {
         for (let j = 0; j < editors.length; j++) {
             if (bigCategories[i].bid === editors[j].bid) {
@@ -384,7 +391,6 @@ router.get('/admin/editor/manager-editor/add', auth.isAdmin, async (req, res) =>
             bigCategories[i].choose = true
         }
     }
-
     res.render('dashboard/user/editor/add-manager-editor', {
         layout: 'admin-dashboard.hbs',
         bigCategories,
@@ -451,6 +457,81 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
     }
     await postModel.add(entity)
     res.render('OK')
+})
+////////Editor Manager Post///////
+router.get('/editor/post/list', auth.isEditor, async (req, res) => {
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    var posts = await postModel.getAll()
+    posts.forEach(post => {
+        post.status = postModel.parseStatusHTML(post.status)
+        bigCategories.forEach(big => {
+            if (post.bid === big.bid) {
+                post.bigCategoryName = big.name
+            }
+        })
+        smallCategories.forEach(small => {
+            if (post.sid === small.id) {
+                post.smallCategoryName = small.name
+            }
+        })
+    })
+    res.render('dashboard/browse/list-post', {
+        layout: 'editor-dashboard.hbs',
+        posts
+    })
+})
+
+router.get('/editor/post', auth.isEditor, async (req, res) => {
+    post = await postModel.getByID(req.query.id)
+    res.render('dashboard/browse/read-post', {
+        layout: "editor-dashboard.hbs",
+        post,
+        id: req.query.id
+    })
+})
+
+router.get('/editor/post/deny-post', auth.isEditor, async (req, res) => {
+    post = await postModel.getByID(req.query.id)
+    res.render('dashboard/browse/deny-post', {
+        layout: "editor-dashboard.hbs",
+        post
+    })
+})
+
+router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
+    req.body.status = 0
+    req.body.id = req.query.id
+    await postModel.updateDenyPost(req.body)
+    res.redirect('/dashboard/editor/post/list', {
+        layout: "editor-dashboard.hbs",
+        post
+    })
+})
+
+router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
+    post = await postModel.getByID(req.query.id)
+    bigCategories = await bigCategoryModel.getAll()
+    smallCategories = await smallCategoryModel.getAll()
+    var mapBigCate = new Map()
+    bigCategories.forEach(element => {
+        mapBigCate.set(element.bid, element.name)
+    });
+    smallCategories.forEach(element => {
+        element.bigCateName = mapBigCate.get(element.bid)
+    });
+
+    res.render('dashboard/browse/success-post', {
+        layout: "editor-dashboard.hbs",
+        post,
+        smallCategories,
+        bigCategories
+    })
+
+})
+
+router.post('/editor/post/success-post', auth.isEditor, async (req, res) => {
+    res.redirect('/dashboard/editor/post/list')
 })
 
 module.exports = router

@@ -1,5 +1,8 @@
 const db = require('../util/db')
 const TBL_POST = "posts"
+const TBL_BCategory = 'big_category';
+const TBL_SCategory = 'small_category';
+const TBL_Manager = 'manager';
 
 module.exports = {
     statusPending: "0",
@@ -22,5 +25,30 @@ module.exports = {
     },
     getAll: () => {
         return db.load(`select * from ${TBL_POST}`)
+    },
+    getByID: async (id) => {
+        const query = `select * from ${TBL_POST} where id = ${id}`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    },
+    updateDenyPost: function (entity) {
+        const condition = {
+            id: entity.id
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
+    updateSuccessPost: function (entity) {
+        const condition = {
+            id: entity.id
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
+    getByBigCateForEditor: (id) => {
+        return db.load(`select bc.bid as bid,bc.name as name from ${TBL_BCategory} bc join ${TBL_Manager} m on bc.bid=m.bid where m.uid=${id}`)
     }
 }
