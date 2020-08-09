@@ -9,6 +9,7 @@ const tagModel = require('../model/tag-name.model')
 const managerModel = require('../model/manager.model')
 const postModel = require('../model/post.model')
 const auth = require('../middlewares/auth.mdw')
+const multer = require('multer')
 
 const OneDayInSeconds = 60 * 60 * 24
 
@@ -102,6 +103,11 @@ router.get('/admin/small-category', auth.isAdmin, async (req, res) => {
         layout: 'admin-dashboard.hbs',
         smallCategories,
     })
+})
+
+router.get('/small-category', async (req, res) => {
+    smallCategories = await smallCategoryModel.getListByBID(req.query.bid)
+    res.json(smallCategories)
 })
 
 router.get('/admin/small-category/edit', auth.isAdmin, async (req, res) => {
@@ -428,24 +434,51 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
     })
 })
 
-router.get('/writer/post/write', auth.isWriter, (req, res) => {
+router.get('/writer/post/write', auth.isWriter, async (req, res) => {
+    bigCategories = await managerModel.getListByIDManager(req.query.uid)
     res.render('dashboard/post/write-post', {
-        layout: 'writer-dashboard.hbs'
+        layout: 'writer-dashboard.hbs',
+        bigCategories,
+        smallCategories
     })
 })
 
 router.post('/writer/post/write', auth.isWriter, async (req, res) => {
-    if (req.body.title == "" || req.body.summary == "" || req.body.content == "")
+    if (req.body.title == "" || req.body.summary == "" ||
+        req.body.content == "" || req.body.bid == "" || req.body.sid == "") {
         return res.render('back', {
             layout: 'writer-dashboard.hbs',
             err: "You must fill all text box"
         })
+    }
+
+    var imagePath = moment().unix()
+    const storage = multer.diskStorage({
+        filename(req, file, cb) {
+            cb(null, `${imagePath}.jpg`);
+        },
+        destination(req, file, cb) {
+            cb(null, './public/images');
+        }
+    })
+    const upload = multer({ storage });
+    upload.array('input-b1', 3)(req, res, function (err) {
+        if (err) {
+            console.log(err)
+            return res.render('back', {
+                layout: 'writer-dashboard.hbs',
+                err: "Can not upload file"
+            })
+        }
+    })
+
     const entity = {
         title: req.body.title,
         summary: req.body.summary,
         content: req.body.content,
         bid: req.body.bid,
-        sid: req.body.sid
+        sid: req.body.sid,
+        image_path: imagePath
     }
     await postModel.add(entity)
     res.render('OK')

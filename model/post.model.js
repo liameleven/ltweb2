@@ -22,5 +22,29 @@ module.exports = {
     },
     getAll: () => {
         return db.load(`select * from ${TBL_POST}`)
+    },
+    getByBigCateID: async (id) => {
+        const query = `select * from ${TBL_POST} where bid = ${id} order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    getBySmallCateID: async (sid) => {
+        const query = `select * from ${TBL_POST} where sid = ${sid} order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    getByID: async (id) => {
+        const query = `select * from ${TBL_POST} where id = ${id}`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
     }
 }

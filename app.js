@@ -21,6 +21,7 @@ app.get('/logout', (req, res) => {
 
 app.use('/account', auth.login, require('./route/account.route'))
 app.use('/dashboard', auth.notLogin, require('./route/dashboard.route'))
+app.use('/', require('./route/news.route'))
 
 app.use((req, res) => {
     res.send('404')
