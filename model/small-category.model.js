@@ -37,4 +37,8 @@ module.exports = {
             return null;
         return rows[0];
     },
+    getByBID: async function (bid) {
+        const query = `select * from ${TBL_SCategory} where bid = '${bid}'`        
+        return await db.load(query) 
+    },
 }

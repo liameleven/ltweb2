@@ -34,6 +34,9 @@ module.exports = {
         }
         return rows[0]
     },
+    getByStatus: () => {
+        return db.load(`select * from ${TBL_POST} where status = 0`)
+    },
     updateDenyPost: function (entity) {
         const condition = {
             id: entity.id
@@ -48,7 +51,7 @@ module.exports = {
         delete entity.id;
         return db.patch(TBL_POST, entity, condition);
     },
-    getByBigCateForEditor: (id) => {
-        return db.load(`select bc.bid as bid,bc.name as name from ${TBL_BCategory} bc join ${TBL_Manager} m on bc.bid=m.bid where m.uid=${id}`)
-    }
+    getByWritter: (uid) => {
+        return db.load(`select * from ${TBL_POST} where user_id=${uid}`)
+    },
 }

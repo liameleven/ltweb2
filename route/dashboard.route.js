@@ -428,16 +428,17 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
             }
         })
     })
-    console.log(posts)
     res.render('dashboard/post/list-post', {
         layout: 'writer-dashboard.hbs',
         posts
     })
 })
 
-router.get('/writer/post/write', auth.isWriter, (req, res) => {
+router.get('/writer/post/write', auth.isWriter, async (req, res) => {
+    bigCategories = await bigCategoryModel.getAll()
     res.render('dashboard/post/write-post', {
-        layout: 'writer-dashboard.hbs'
+        layout: 'writer-dashboard.hbs',
+        bigCategories
     })
 })
 
@@ -455,6 +456,7 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
         bid: req.body.bid,
         sid: req.body.sid
     }
+    console.log(entity)
     await postModel.add(entity)
     res.render('OK')
 })
@@ -462,7 +464,7 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
 router.get('/editor/post/list', auth.isEditor, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
-    var posts = await postModel.getAll()
+    var posts = await postModel.getByStatus()
     posts.forEach(post => {
         post.status = postModel.parseStatusHTML(post.status)
         bigCategories.forEach(big => {
@@ -511,28 +513,22 @@ router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
 
 router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
     post = await postModel.getByID(req.query.id)
-    bigCategories = await bigCategoryModel.getAll()
-    smallCategories = await smallCategoryModel.getAll()
-    var mapBigCate = new Map()
-    bigCategories.forEach(element => {
-        mapBigCate.set(element.bid, element.name)
-    });
-    smallCategories.forEach(element => {
-        element.bigCateName = mapBigCate.get(element.bid)
-    });
-
+    smallCategories = await smallCategoryModel.getByBID(post.bid)
     res.render('dashboard/browse/success-post', {
         layout: "editor-dashboard.hbs",
         post,
-        smallCategories,
-        bigCategories
-    })
+        smallCategories
 
+    })
 })
 
 router.post('/editor/post/success-post', auth.isEditor, async (req, res) => {
+    req.body.status = 1
+    req.body.id = req.query.id
+    const date = moment(req.body.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+    req.body.date = date
+    await postModel.updateDenyPost(req.body)
     res.redirect('/dashboard/editor/post/list')
 })
-
 module.exports = router
 
