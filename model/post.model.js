@@ -77,7 +77,7 @@ module.exports = {
     },
 
     getPostByBigCate: async (uid) => {
-        const query = `SELECT * FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} and status = 0 order by date desc`
+        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} and status = 0 order by date desc`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null

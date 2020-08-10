@@ -27,7 +27,7 @@ module.exports = {
     },
     getListByIDManager: async function (uid) {
         return db.load(`select m.*,bc.name from ${TBL_Manager} m join ${TBL_BCategory} bc on m.bid=bc.bid where m.uid='${uid}'`);
-    },
+    },    
     getByID: async function (uid) {
         const query = `select * from ${TBL_Manager} where uid = '${uid}'`
         return await db.load(query)

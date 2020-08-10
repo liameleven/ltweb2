@@ -10,7 +10,7 @@ const managerModel = require('../model/manager.model')
 const postModel = require('../model/post.model')
 const auth = require('../middlewares/auth.mdw')
 const multer = require('multer')
-const postTagModel = require('../model/post-tag')
+const postTagModel = require('../model/post-tag.model')
 
 const OneDayInSeconds = 60 * 60 * 24
 
@@ -489,7 +489,6 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
         }
     })
     var cateID = String(req.body.cateID).split("-")
-    //console.log(req.body)
     const entity = {
         title: req.body.title,
         summary: req.body.summary,
@@ -499,7 +498,6 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
         sid: cateID[1],
         image_path: imagePath
     }
-    //console.log(entity)
     await postModel.add(entity)
     res.send('OK')
 })
@@ -507,7 +505,7 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
 router.get('/editor/post/list', auth.isEditor, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
-    var posts = await postModel.getByStatus()
+    var posts = await postModel.getPostByBigCate(req.session.authUser.uid)
     posts.forEach(post => {
         post.status = postModel.parseStatusHTML(post.status)
         bigCategories.forEach(big => {
@@ -520,6 +518,7 @@ router.get('/editor/post/list', auth.isEditor, async (req, res) => {
                 post.smallCategoryName = small.name
             }
         })
+
     })
     res.render('dashboard/browse/list-post', {
         layout: 'editor-dashboard.hbs',
@@ -556,19 +555,48 @@ router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
 
 router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
     post = await postModel.getByID(req.query.id)
+    var bigCategories = await managerModel.getListByIDManager(req.session.authUser.uid)
+    var smallCategories = await smallCategoryModel.getAll()
+    bigCategories.forEach(big => {
+        var arraySmallCate = new Array()
+        smallCategories.forEach(small => {
+            if (big.bid === small.bid) {
+                arraySmallCate.push(small)
+            }
+        })
+        big.smallCategories = arraySmallCate
+        big.bigName = big.name
+    })
+    bigCategories.forEach(big => {
+        if (big.bid === post.bid) {
+            big.smallCategories.forEach(small => {
+                if (small.id === post.sid) {
+                    small.selected = true
+                }
+                else {
+                    small.selected = false
+                }
+            })
+        }
+    })    
     res.render('dashboard/browse/success-post', {
         layout: "editor-dashboard.hbs",
-        post
-
+        post,
+        bigCategories
     })
 })
 
 router.post('/editor/post/success-post', auth.isEditor, async (req, res) => {
-    req.body.status = 1
-    req.body.id = req.query.id
+    var cateID = String(req.body.cateID).split("-")
     const date = moment(req.body.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    req.body.date = date
-    await postModel.updateDenyPost(req.body)
+    var condition = {
+        status: 1,
+        id: req.query.id,
+        bid: cateID[0],
+        sid: cateID[1],
+        date: date
+    }
+    await postModel.updateSuccessPost(condition)
     res.redirect('/dashboard/editor/post/list')
 })
 ////////Editor-Post-Tag////////////////////
