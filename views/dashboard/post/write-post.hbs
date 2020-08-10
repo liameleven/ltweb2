@@ -1,3 +1,21 @@
+{{#section 'css'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/css/fileinput.min.css">
+{{/section}}
+
+{{#section 'js'}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/themes/fa/theme.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/locales/vi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
+<script>
+    $('#input-b1').fileinput({
+        theme: 'fa',
+        showCaption: true,
+        dropZoneEnabled: true,
+        allowedFileExtensions: ['png', 'jpg', 'gif'],
+        language: 'vi'
+    });
+</script>
 <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
@@ -10,11 +28,12 @@
         ],
     });
 </script>
+{{/section}}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Write Post</h3>
     </div>
-    <form method="post" action="/dashboard/writer/post/write">
+    <form method="post" action="" enctype="multipart/form-data">
         <div class="card-body">
             <div class="col-sm-12">
                 <div class="form-group row">
@@ -25,28 +44,35 @@
                         <input type="text" class="form-control" id="title" name="title">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="">Thumbnail</label>
+                    <input id="input-b1" name="input-b1" type="file" class="file" data-browse-on-zone-click="true">
+                </div>
                 <div class="form-group row">
                     <div class="input-group mb-2">
-                        <div class="input-group-prepend">﻿​
+                        <div class="input-group-prepend">﻿
                             <div class="input-group-text">Summary</div>
                         </div>
                         <input type="text" class="form-control" id="summary" name="summary">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for=""></label>
+                    <label for="">Content</label>
                     <textarea name="content" id="txtFullDes" class="form-control" cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-group row">
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
-                            <div class="input-group-text">Big Category</div>
+                            <div class="input-group-text">Category</div>
                         </div>
                         <select class="form-control select2 select2-danger select2-hidden-accessible"
                             data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
-                            tabindex="-1" aria-hidden="true" name="bid">
+                            tabindex="-1" aria-hidden="true" name="cateID">
                             {{#each bigCategories}}
-                            <option value="{{bid}}" data-select2-id="14">{{name}}</option>
+                            {{#each smallCategories}}
+                            <option value="{{bid}}-{{id}}" data-select2-id="14">
+                                {{../bigName}} - {{name}}</option>
+                            {{/each}}
                             {{/each}}
                         </select>
                     </div>
