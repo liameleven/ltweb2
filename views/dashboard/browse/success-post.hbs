@@ -1,0 +1,59 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Success Post</h3>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <form role="form" id="quickForm" novalidate="novalidate" method="post" action="">
+                    <div>
+                        <div>
+                            <h1 style="text-align: center;">{{post.title}}</h1>
+                        </div>
+                        <br>
+                        <div>
+                            <h2 style="text-align: center;">{{post.summary}}</h2>
+                        </div>
+                        <br>
+                        <div>
+                            <p>{{{post.content}}}</p>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group">
+                            <label class="label">Date Release</label>
+                            <div class="input-group-icon">
+                                <input class="input--style-4 js-datepicker" type="text" name="date">
+                                <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">Category</div>
+                                </div>
+                                <select class="form-control select2 select2-danger select2-hidden-accessible"
+                                    data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
+                                    tabindex="-1" aria-hidden="true" name="cateID">
+                                    {{#each bigCategories}}
+                                    {{#each smallCategories}}
+                                    {{#if selected}}
+                                    <option selected value="{{bid}}-{{id}}" data-select2-id="14">{{../bigName}} -
+                                        {{name}}</option>
+                                    {{else}}
+                                    <option value="{{bid}}-{{id}}" data-select2-id="14">
+                                        {{../bigName}} - {{name}}</option>
+                                    {{/if}}
+                                    {{/each}}
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
