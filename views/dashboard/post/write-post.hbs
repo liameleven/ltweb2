@@ -33,7 +33,7 @@
     <div class="card-header">
         <h3 class="card-title">Write Post</h3>
     </div>
-    <form method="post" action="/dashboard/writer/post/write" enctype="multipart/form-data">
+    <form method="post" action="" enctype="multipart/form-data">
         <div class="card-body">
             <div class="col-sm-12">
                 <div class="form-group row">
@@ -63,27 +63,18 @@
                 <div class="form-group row">
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
-                            <div class="input-group-text">Big Category</div>
+                            <div class="input-group-text">Category</div>
                         </div>
-                        {{#each bigCategories}}
                         <select class="form-control select2 select2-danger select2-hidden-accessible"
                             data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
-                            tabindex="-1" aria-hidden="true" name="sid">
-                            <option value="{{bid}}" data-select2-id="14">{{name}}</option>
+                            tabindex="-1" aria-hidden="true" name="cateID">
+                            {{#each bigCategories}}
+                            {{#each smallCategories}}
+                            <option value="{{bid}}-{{id}}" data-select2-id="14">
+                                {{../bigName}} - {{name}}</option>
+                            {{/each}}
+                            {{/each}}
                         </select>
-                        {{/each}}
-                    </div>
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">Small Category</div>
-                        </div>
-                        {{#each smallCategories}}
-                        <select class="form-control select2 select2-danger select2-hidden-accessible"
-                            data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
-                            tabindex="-1" aria-hidden="true" name="sid">
-                            <option selected value="{{id}}" data-select2-id="14">{{name}}</option>
-                        </select>
-                        {{/each}}
                     </div>
                 </div>
                 <div class="form-group row">

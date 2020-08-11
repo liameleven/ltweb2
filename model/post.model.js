@@ -1,6 +1,13 @@
 const db = require('../util/db')
+<<<<<<< HEAD
 const TBL_POST = "posts"
 const TBL_POST_TAG = "post_tag"
+=======
+const TBL_POST = 'posts';
+const TBL_BCategory = 'big_category';
+const TBL_SCategory = 'small_category';
+const TBL_Manager = 'manager';
+>>>>>>> bf85cb004b9c024e97c02cad44ef2ca8ee7621b0
 
 module.exports = {
     statusPending: "0",
@@ -26,6 +33,31 @@ module.exports = {
     },
     getByBigCateID: async (id) => {
         const query = `select * from ${TBL_POST} where bid = ${id} and status = 1 order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    },
+    getByStatus: () => {
+        return db.load(`select * from ${TBL_POST} where status = 0`)
+    },
+    updateDenyPost: function (entity) {
+        const condition = {
+            id: entity.id
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
+    updateSuccessPost: function (entity) {
+        const condition = {
+            id: entity.id
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
+    getByWriter: async (uid) => {
+        const query = `select * from ${TBL_POST} where user_id=${uid}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -66,5 +98,15 @@ module.exports = {
             return null
         }
         return rows
+    },
+    getPostByBigCate: async (uid) => {
+        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} and status = 0 order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
     }
+    /////////
+
 }

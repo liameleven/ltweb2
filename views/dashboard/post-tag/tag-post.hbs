@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Tag Name</h3>
+        <a class="btn btn-success btn-sm" href="/dashboard/editor/post/tag-name/add?post_id={{postid}}" role="button" title="Edit Tag"
+            style="float: right;">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table id="example2" class="table table-bordered table-hover dataTable dtr-inline" role="grid"
+                aria-describedby="example2_info">
+                <thead>
+                    <tr role="row">                       
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                            aria-label="Browser: activate to sort column ascending">Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each postTag}}
+                    <tr role="row" class="odd">                        
+                        <td>{{name}}
+                            <a class="btn btn-danger btn-sm" href="/dashboard/editor/post/tag-name/delete?post_id={{post_id}}&tag_id={{tag_id}}" role="button"
+                                title="Delete Tag" style="float: right;margin-left: 5px;">
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                            </a>                            
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
