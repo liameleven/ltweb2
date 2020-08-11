@@ -36,11 +36,17 @@
 
                             <!-- Login Search Area -->
                             <div class="login-search-area d-flex align-items-center">
+                                {{#unless isLogin}}
                                 <!-- Login -->
                                 <div class="login d-flex">
                                     <a href="account/login">Login</a>
                                     <a href="account/register">Register</a>
                                 </div>
+                                {{else}}
+                                <div class="login d-flex">
+                                    <a href="account/logout">Logout</a>
+                                </div>
+                                {{/unless}}
                                 <!-- Search Form -->
                                 <div class="search-form">
                                     <form action="#" method="post">
@@ -84,10 +90,10 @@
                             <div class="classynav">
                                 <ul>
                                     {{#each bigCategories}}
-                                    <li><a href="#">{{name}}</a>
+                                    <li><a href="/category?bid={{bid}}">{{name}}</a>
                                         <ul class="dropdown">
                                             {{#each smallCategories}}
-                                            <li><a href="#">{{name}}</a></li>
+                                            <li><a href="/category?bid={{bid}}&sid={{id}}">{{name}}</a></li>
                                             {{/each}}
                                         </ul>
                                         {{!-- <ul class="dropdown">
@@ -117,7 +123,7 @@
         <div class="main-footer-area">
             <div class="container">
                 <div class="row">
-                    <!-- Footer Widget Area -->
+                    {{!-- <!-- Footer Widget Area -->
                     <div class="col-12 col-sm-6 col-lg-2">
                         <div class="footer-widget-area mt-80">
                             <!-- Title -->
@@ -186,17 +192,17 @@
                             </ul>
                         </div>
                     </div>
+                </div> --}}
                 </div>
             </div>
-        </div>
 
-        <!-- Bottom Footer Area -->
-        <div class="bottom-footer-area">
-            <div class="container h-100">
-                <div class="row h-100 align-items-center">
+            <!-- Bottom Footer Area -->
+            <div class="bottom-footer-area">
+                <div class="container h-100">
+                    <div class="row h-100 align-items-center">
+                    </div>
                 </div>
             </div>
-        </div>
     </footer>
     <!-- ##### Footer Area Start ##### -->
 

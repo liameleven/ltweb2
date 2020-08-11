@@ -53,9 +53,7 @@ router.post('/register', async (req, res) => {
     }
     console.log(req.body)
     await usersModel.create(req.body)
-    res.render('index', {
-        layout: false
-    })
+    res.redirect('/account/login')
 })
 
 
@@ -82,7 +80,10 @@ router.post('/login', async function (req, res) {
         delete user.password_hash;
         req.session.isAuthenticated = true;
         req.session.authUser = user;
-
+        
+        if (user.permission == usersModel.Subscriber){
+            return res.redirect('/')
+        }
         return res.redirect('/dashboard')
     }
     res.render('account/login', {
