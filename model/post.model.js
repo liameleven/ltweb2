@@ -1,13 +1,9 @@
 const db = require('../util/db')
-<<<<<<< HEAD
 const TBL_POST = "posts"
 const TBL_POST_TAG = "post_tag"
-=======
-const TBL_POST = 'posts';
 const TBL_BCategory = 'big_category';
 const TBL_SCategory = 'small_category';
 const TBL_Manager = 'manager';
->>>>>>> bf85cb004b9c024e97c02cad44ef2ca8ee7621b0
 
 module.exports = {
     statusPending: "0",
