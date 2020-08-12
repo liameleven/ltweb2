@@ -76,6 +76,14 @@ module.exports = {
         }
         return rows[0]
     },
+    getByIDBrowse: async (id) => {
+        const query = `select * from ${TBL_POST} where id = ${id} and status = 0`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    },
     increaseView: async (entity) => {
         entity.view = entity.view + 1
         const condition = {
@@ -102,7 +110,43 @@ module.exports = {
             return null
         }
         return rows
+    },
+    /////////////////Pagination-Category//////////////
+    pagebyBigCate: async (bid, limit, offset) => {
+        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 order by date desc limit ${limit} offset ${offset}`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    countbyBigCate: async (bid) => {
+        const row = await db.load(`select count(*) as total from ${TBL_POST} where bid = ${bid} and status = 1`)
+        return row[0].total
+    },
+    pagebySmallCate: async (sid, limit, offset) => {        
+            const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc limit ${limit} offset ${offset} `
+            const rows = await db.load(query)
+            if (rows.length === 0) {
+                return null
+            }
+            return rows
+    },
+    countbySmallCate: async (sid) => {
+        const row = await db.load(`select count(*) as total from ${TBL_POST} where sid = ${sid} and status = 1`)
+        return row[0].total
+    },
+    /////////////////Pagination-Tag//////////////
+    pagebyTag: async (tag_id, limit, offset) => {        
+        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 limit ${limit} offset ${offset}`
+        const rows = await db.load(query)        
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    countbyTag: async (tag_id) => {
+        const row = await db.load(`select count(*) as total from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1`)
+        return row[0].total
     }
-    /////////
-
 }

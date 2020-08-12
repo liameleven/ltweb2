@@ -22,10 +22,16 @@
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group">
-                            <label class="label">Date Release</label>
-                            <div class="input-group-icon">
-                                <input class="input--style-4 js-datepicker" type="text" name="date">
-                                <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                            <div class="form-group">
+                                <label>Date:</label>
+                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input"
+                                        data-target="#reservationdate" name="date">
+                                    <div class="input-group-append" data-target="#reservationdate"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend">

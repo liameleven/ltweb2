@@ -40,18 +40,41 @@
                     </div>
                     {{/each}}
                 </div>
-
+                {{#if have_smallcate}}
                 <nav aria-label="Page navigation example">
                     <ul class="pagination mt-50">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                        <li class="page-item"><a class="page-link" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">10</a></li>
+                        <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
+                            <a class="page-link" href="/category?bid={{bid}}&sid={{sid}}&page={{prev_value}}" tabindex="-1"
+                                aria-disabled="true">Prev</a>
+                        </li>
+                        {{#each page_items}}
+                        <li class="page-item {{#if isActive}}active{{/if}}"><a class="page-link"
+                                href="/category?bid={{bid}}&sid={{sid}}&page={{value}}">{{value}}</a>
+                        </li>
+                        {{/each}}
+                        <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
+                            <a class="page-link" href="/category?bid={{bid}}&sid={{sid}}&page={{next_value}}">Next</a>
+                        </li>
                     </ul>
-                </nav>
+                </nav> 
+                {{else}}
+                    <nav aria-label="Page navigation example">
+                    <ul class="pagination mt-50">
+                        <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
+                            <a class="page-link" href="/category?bid={{bid}}&page={{prev_value}}" tabindex="-1"
+                                aria-disabled="true">Prev</a>
+                        </li>
+                        {{#each page_items}}
+                        <li class="page-item {{#if isActive}}active{{/if}}"><a class="page-link"
+                                href="/category?bid={{bid}}&page={{value}}">{{value}}</a>
+                        </li>
+                        {{/each}}
+                        <li class="page-item {{#unless can_go_next}}disabled{{/unless}}">
+                            <a class="page-link" href="/category?bid={{bid}}&page={{next_value}}">Next</a>
+                        </li>
+                    </ul>
+                </nav> 
+                {{/if}}
             </div>
         </div>
     </div>
