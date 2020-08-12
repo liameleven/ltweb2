@@ -20,7 +20,7 @@ require('./middlewares/session.mdw')(app)
 app.get('/logout', (req, res) => {
     req.session.isAuthenticated = false
     req.session.authUser = null
-    res.redirect('/account/login')
+    res.redirect('back')
 })
 
 app.use('/account', auth.login, require('./route/account.route'))

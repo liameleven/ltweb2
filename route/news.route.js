@@ -110,7 +110,8 @@ router.get('/tag', async (req, res) => {
     res.render('news/tag', {
         layout: 'news.hbs',
         bigCategories,
-        posts
+        posts,
+        isLogin: req.session.isAuthenticated
     })
 })
 
@@ -149,7 +150,8 @@ router.get('/category', async (req, res) => {
     res.render('news/category', {
         layout: 'news.hbs',
         bigCategories,
-        posts
+        posts,
+        isLogin: req.session.isAuthenticated
     })
 })
 
