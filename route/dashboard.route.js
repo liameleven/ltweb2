@@ -369,7 +369,6 @@ router.get('/admin/editor', async (req, res) => {
     })
     res.render('dashboard/user/editor/editor', {
         layout: 'admin-dashboard.hbs',
-
         users
     })
 })
@@ -527,7 +526,7 @@ router.get('/editor/post/list', auth.isEditor, async (req, res) => {
 })
 
 router.get('/editor/post', auth.isEditor, async (req, res) => {
-    post = await postModel.getByID(req.query.id)
+    post = await postModel.getByIDBrowse(req.query.id)
     res.render('dashboard/browse/read-post', {
         layout: "editor-dashboard.hbs",
         post,
@@ -536,7 +535,7 @@ router.get('/editor/post', auth.isEditor, async (req, res) => {
 })
 
 router.get('/editor/post/deny-post', auth.isEditor, async (req, res) => {
-    post = await postModel.getByID(req.query.id)
+    post = await postModel.getByIDBrowse(req.query.id)
     res.render('dashboard/browse/deny-post', {
         layout: "editor-dashboard.hbs",
         post
@@ -547,14 +546,11 @@ router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
     req.body.status = 0
     req.body.id = req.query.id
     await postModel.updateDenyPost(req.body)
-    res.redirect('/dashboard/editor/post/list', {
-        layout: "editor-dashboard.hbs",
-        post
-    })
+    res.redirect('/dashboard/editor/post/list')
 })
 
 router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
-    post = await postModel.getByID(req.query.id)
+    post = await postModel.getByIDBrowse(req.query.id)
     var bigCategories = await managerModel.getListByIDManager(req.session.authUser.uid)
     var smallCategories = await smallCategoryModel.getAll()
     bigCategories.forEach(big => {

@@ -96,17 +96,18 @@ router.post('/login', async function (req, res) {
 
 async function sendmail(to_email, name, otp) {
     let transporter = nodemailer.createTransport({
+        service: 'gmail',
         host: "smtp.gmail.com",
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: 'tintran113114115@gmail.com', // generated ethereal user
-            pass: 'ngoalong0188', // generated ethereal password
+            user: 'tttintran303@gmail.com', // generated ethereal user
+            pass: 'Htin334936336', // generated ethereal password
         },
     });
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: 'tintran113114115@gmail.com', // sender address // random ma sao m
+        from: 'tttintran303@gmail.com', // sender address // random ma sao m
         to: to_email, // list of receivers
         subject: "Ma xac nhan", // Subject line
         text: `Dear ${name} You have selected from LTWEB2@gmail.com as your new verification page: ${otp} this code will expire three hours after email was send Why you received this email apple requires verification whenever an email address If you did not make this request, you can ignore this email`,
