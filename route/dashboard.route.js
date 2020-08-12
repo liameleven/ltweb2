@@ -460,7 +460,16 @@ router.get('/writer/post/write', auth.isWriter, async (req, res) => {
     })
 })
 
-router.post('/writer/post/write', auth.isWriter, async (req, res) => {
+const storage = multer.diskStorage({
+    filename(req, file, cb) {
+        cb(null, String(file.originalname));
+    },
+    destination(req, file, cb) {
+        cb(null, './public/images');
+    }
+})
+const upload = multer({ storage });
+router.post('/writer/post/write', auth.isWriter, upload.single('input-b1'), async (req, res) => {
     if (req.body.title == "" || req.body.summary == "" ||
         req.body.content == "") {
         return res.render('back', {
@@ -468,25 +477,6 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
             err: "You must fill all text box"
         })
     }
-    var imagePath = moment().unix()
-    const storage = multer.diskStorage({
-        filename(req, file, cb) {
-            cb(null, `${imagePath}.jpg`);
-        },
-        destination(req, file, cb) {
-            cb(null, './public/images');
-        }
-    })
-    const upload = multer({ storage });
-    upload.array('input-b1', 3)(req, res, function (err) {
-        if (err) {
-            // console.log(err)
-            return res.render('back', {
-                layout: 'writer-dashboard.hbs',
-                err: "Can not upload file"
-            })
-        }
-    })
     var cateID = String(req.body.cateID).split("-")
     const entity = {
         title: req.body.title,
@@ -495,10 +485,10 @@ router.post('/writer/post/write', auth.isWriter, async (req, res) => {
         user_id: req.session.authUser.uid,
         bid: cateID[0],
         sid: cateID[1],
-        image_path: imagePath
+        image_path: '/public/images/' + req.file.originalname
     }
     await postModel.add(entity)
-    res.send('OK')
+    res.redirect('/writer/post/list')
 })
 ////////Editor Manager Post///////
 router.get('/editor/post/list', auth.isEditor, async (req, res) => {
@@ -574,7 +564,7 @@ router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
                 }
             })
         }
-    })    
+    })
     res.render('dashboard/browse/success-post', {
         layout: "editor-dashboard.hbs",
         post,

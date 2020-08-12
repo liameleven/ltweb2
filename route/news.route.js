@@ -148,8 +148,8 @@ router.get('/tag', async (req, res) => {
         prev_value: page - 1,
         next_value: page + 1,
         can_go_prev: page > 1,
-        can_go_next: page < nPages
-
+        can_go_next: page < nPages,
+        isLogin: req.session.isAuthenticated
     })
 })
 
@@ -265,7 +265,8 @@ router.get('/category', async (req, res) => {
         next_value: page + 1,
         can_go_prev: page > 1,
         can_go_next: page < nPages,
-        have_smallcate
+        have_smallcate,
+        isLogin: req.session.isAuthenticated
     })
 })
 
