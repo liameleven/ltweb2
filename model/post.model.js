@@ -33,7 +33,7 @@ module.exports = {
         if (rows.length === 0) {
             return null
         }
-        return rows[0]
+        return rows
     },
     getByStatus: () => {
         return db.load(`select * from ${TBL_POST} where status = 0`)
