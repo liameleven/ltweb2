@@ -11,7 +11,7 @@ const postModel = require('../model/post.model')
 const auth = require('../middlewares/auth.mdw')
 const multer = require('multer')
 const postTagModel = require('../model/post-tag.model')
-
+const usersModel = require('../model/users.model')
 const OneDayInSeconds = 60 * 60 * 24
 
 router.get('/', (req, res) => {
@@ -422,19 +422,22 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     var posts = await postModel.getByWriter(req.session.authUser.uid)
-    posts.forEach(post => {
-        post.status = postModel.parseStatusHTML(post.status)
-        bigCategories.forEach(big => {
-            if (post.bid === big.bid) {
-                post.bigCategoryName = big.name
-            }
+    if (posts != null) {
+        posts.forEach(post => {
+            post.status = postModel.parseStatusHTML(post.status)
+            bigCategories.forEach(big => {
+                if (post.bid === big.bid) {
+                    post.bigCategoryName = big.name
+                }
+            })
+            smallCategories.forEach(small => {
+                if (post.sid === small.id) {
+                    post.smallCategoryName = small.name
+                }
+            })
         })
-        smallCategories.forEach(small => {
-            if (post.sid === small.id) {
-                post.smallCategoryName = small.name
-            }
-        })
-    })
+    }
+
     res.render('dashboard/post/list-post', {
         layout: 'writer-dashboard.hbs',
         posts
@@ -547,10 +550,7 @@ router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
     req.body.status = 0
     req.body.id = req.query.id
     await postModel.updateDenyPost(req.body)
-    res.redirect('/dashboard/editor/post/list', {
-        layout: "editor-dashboard.hbs",
-        post
-    })
+    res.redirect('/dashboard/editor/post/list')
 })
 
 router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
@@ -578,7 +578,7 @@ router.get('/editor/post/success-post', auth.isEditor, async (req, res) => {
                 }
             })
         }
-    })    
+    })
     res.render('dashboard/browse/success-post', {
         layout: "editor-dashboard.hbs",
         post,
@@ -645,5 +645,31 @@ router.get('/editor/post/tag-name/delete', auth.isEditor, async (req, res) => {
     res.redirect('back')
 })
 
+///////Update Profile/////////////////
+router.post('/updateprofile', async (req, res) => {
+    console.log(req.session.authUser.uid)
+    console.log(req.body)
+    const dob = moment(req.body.birthday, 'DD/MM/YYYY').format('YYYY-MM-DD')
+    req.body.birthday = dob
+    await userModel.update(req.body, req.session.authUser.uid)
+    res.redirect('/dashboard')
+})
+router.get('/updateprofile', async (req, res) => {
+    var user = await userModel.getByUserId(req.session.authUser.uid)
+    if (req.session.authUser.gender == 1) {
+        var male = true
+    }
+    else {
+        var male = false
+    }
+    user.birthday = moment(user.birthday).format("DD/MM/YYYY")
+    res.render('dashboard/updateprofile', {
+        uid: req.session.authUser.uid,
+        layout: false,
+        isWriter: req.session.authUser.permission == usersModel.Writer,
+        user,
+        male
+    })
+})
 module.exports = router
 

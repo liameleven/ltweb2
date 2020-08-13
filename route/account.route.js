@@ -80,8 +80,8 @@ router.post('/login', async function (req, res) {
         delete user.password_hash;
         req.session.isAuthenticated = true;
         req.session.authUser = user;
-        
-        if (user.permission == usersModel.Subscriber){
+
+        if (user.permission == usersModel.Subscriber) {
             return res.redirect('/')
         }
         return res.redirect('/dashboard')

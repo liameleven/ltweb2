@@ -78,6 +78,14 @@ module.exports = {
         const row = await db.load(`select count(*) as total from ${TBL_USERS} where permission = '${permission}'`)
         return row[0].total
     },
+    /////////////////////////
+    getByUserId: async (uid) => {
+        const query = `select * from ${TBL_USERS} where uid = '${uid}'`
+        const rows = await db.load(query)
+        if (rows.length === 0)
+            return null;
+        return rows[0];
+    },
 
 
 };
