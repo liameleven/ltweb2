@@ -48,9 +48,20 @@
                         <td>{{bigCategoryName}}</td>
                         <td>{{smallCategoryName}}</td>
                         <td>{{view}}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" style="margin-left: -40px" href="/dashboard/writer/post?id={{id}}" role="button"
+                                title="Edit Tag" style="float: right;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-success btn-sm mr-2" href="/dashboard/writer/post/edit-post?id={{id}}" role="button"
+                                title="Edit Post" style="float: right;">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </a>
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>
+
             </table>
         </div>
     </div>

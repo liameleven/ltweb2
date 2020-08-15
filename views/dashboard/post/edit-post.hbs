@@ -1,0 +1,96 @@
+{{#section 'css'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/css/fileinput.min.css">
+{{/section}}
+
+{{#section 'js'}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/themes/fa/theme.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/locales/vi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
+<script>
+    $('#input-b1').fileinput({
+        theme: 'fa',
+        showCaption: true,
+        dropZoneEnabled: true,
+        allowedFileExtensions: ['png', 'jpg', 'gif'],
+        language: 'vi'
+    });
+</script>
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#txtFullDes',
+        height: 450,
+        plugins: 'paste image link autolink lists table media',
+        menubar: false,
+        toolbar: [
+            'undo redo | bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright | forecolor backcolor | table link image media',
+        ],
+    });
+</script>
+{{/section}}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Write Post</h3>
+    </div>
+    <form method="post" action="" enctype="">
+        <div class="card-body">
+            <div class="col-sm-12">
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Title</div>
+                        </div>
+                        <input type="text" class="form-control" id="title" name="title" value="{{title}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="">Thumbnail</label>
+                    <input id="input-b1" name="input-b1" type="file" class="file"  data-browse-on-zone-click="true">
+                </div>
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">﻿
+                            <div class="input-group-text">Summary</div>
+                        </div>
+                        <input type="text" class="form-control" id="summary" name="summary" value="{{summary}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="">Content</label>
+                    <textarea name="content" id="txtFullDes" class="form-control" cols="30" rows="10" value="{{{content}}}"></textarea>
+                </div>
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Category</div>
+                        </div>
+                        <select class="form-control select2 select2-danger select2-hidden-accessible"
+                            data-dropdown-css-class="select2-danger" style="width: 100%;" data-select2-id="12"
+                            tabindex="-1" aria-hidden="true" name="cateID">
+                            {{#each bigCategories}}
+                            {{#each smallCategories}}
+                            <option value="{{bid}}-{{id}}" data-select2-id="14">
+                                {{../bigName}} - {{name}}</option>
+                            {{/each}}
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="1"
+                            name="premium">
+                        <label for="customCheckbox1" class="custom-control-label">Premium</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-lg btn-success btn-block">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                Submit
+            </button>
+        </div>
+    </form>
+</div>

@@ -12,6 +12,7 @@ const auth = require('../middlewares/auth.mdw')
 const multer = require('multer')
 const postTagModel = require('../model/post-tag.model')
 const usersModel = require('../model/users.model')
+const { getAllByID } = require('../model/post-tag.model')
 const OneDayInSeconds = 60 * 60 * 24
 
 router.get('/', (req, res) => {
@@ -536,7 +537,7 @@ router.get('/editor/post/deny-post', auth.isEditor, async (req, res) => {
 })
 
 router.post('/editor/post/deny-post', auth.isEditor, async (req, res) => {
-    req.body.status = 0
+    req.body.status = 2
     req.body.id = req.query.id
     await postModel.updateDenyPost(req.body)
     res.redirect('/dashboard/editor/post/list')
@@ -659,6 +660,95 @@ router.get('/updateprofile', async (req, res) => {
         user,
         male
     })
+})
+////////////////////////Writer- EditTag//////////////
+router.get('/writer/post', auth.isWriter, async (req, res) => {
+    var postTag = await postTagModel.getAllByID(req.query.id)
+    var tagName = await tagModel.getAll()
+    if (postTag != null) {
+        postTag.forEach(tagP => {
+            tagName.forEach(tag => {
+                if (tagP.tag_id === tag.id) {
+                    tagP.name = tag.name
+                }
+            })
+
+        })
+    }
+    res.render('dashboard/post-tag/writer-tag-post', {
+        layout: 'writer-dashboard.hbs',
+        postTag,
+        postid: req.query.id
+    })
+})
+
+router.get('/writer/post/add', auth.isWriter, async (req, res) => {
+    var tag = await tagModel.getAll()
+    res.render('dashboard/post-tag/add-tag-post', {
+        layout: 'writer-dashboard.hbs',
+        tag
+    })
+})
+
+router.post('/writer/post/add', auth.isWriter, async (req, res) => {
+    const entity = {
+        post_id: req.query.post_id,
+        tag_id: req.body.tagid
+    }
+    await postTagModel.create(entity)
+    res.redirect('/dashboard/writer/post/list')
+})
+
+router.get('/writer/post/delete', auth.isWriter, async (req, res) => {
+    if (!req.query.post_id || !req.query.tag_id) {
+        return res.redirect('/dashboard')
+    }
+    await postTagModel.deletePostTag(req.query.post_id, req.query.tag_id)
+    res.redirect('back')
+})
+////////Writer- EditPost//////////////
+router.get('/writer/post/edit-post', auth.isWriter, async (req, res) => {
+    const posts=await postModel.getAllByID(req.query.id);
+    var bigCategories = await managerModel.getListByIDManager(req.session.authUser.uid)
+    var smallCategories = await smallCategoryModel.getAll()
+    bigCategories.forEach(big => {
+        var arraySmallCate = new Array()
+        smallCategories.forEach(small => {
+            if (big.bid === small.bid) {
+                arraySmallCate.push(small)
+            }
+        })
+        big.smallCategories = arraySmallCate
+        big.bigName = big.name
+    });
+    res.render('dashboard/post/edit-post', {
+        layout: 'writer-dashboard.hbs',
+        content:posts.content,
+        title:posts.title,
+        summary:posts.summary,
+        bigCategories
+    })
+})
+router.post('/writer/post/edit', auth.isWriter, upload.single('input-b1'), async (req, res) => {
+    if (req.body.title == "" || req.body.summary == "" ||
+        req.body.content == "") {
+        return res.render('back', {
+            layout: 'writer-dashboard.hbs',
+            err: "You must fill all text box"
+        })
+    }
+    var cateID = String(req.body.cateID).split("-")
+    const entity = {
+        title: req.body.title,
+        summary: req.body.summary,
+        content: req.body.content,
+        user_id: req.session.authUser.uid,
+        bid: cateID[0],
+        sid: cateID[1],
+        image_path: '/public/images/' + req.file.originalname
+    }
+    await postModel.add(entity)
+    res.redirect('/writer/post/list')
 })
 module.exports = router
 

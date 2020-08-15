@@ -84,6 +84,14 @@ module.exports = {
         }
         return rows[0]
     },
+    getAllByID: async (id) => {
+        const query = `select * from ${TBL_POST} where id = ${id} `
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    },
     increaseView: async (entity) => {
         entity.view = entity.view + 1
         const condition = {
