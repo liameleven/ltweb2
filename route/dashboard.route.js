@@ -505,20 +505,21 @@ router.get('/editor/post/list', auth.isEditor, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     var posts = await postModel.getPostByBigCate(req.session.authUser.uid)
-    posts.forEach(post => {
-        post.status = postModel.parseStatusHTML(post.status)
-        bigCategories.forEach(big => {
-            if (post.bid === big.bid) {
-                post.bigCategoryName = big.name
-            }
+    if (posts != null) {
+        posts.forEach(post => {
+            post.status = postModel.parseStatusHTML(post.status)
+            bigCategories.forEach(big => {
+                if (post.bid === big.bid) {
+                    post.bigCategoryName = big.name
+                }
+            })
+            smallCategories.forEach(small => {
+                if (post.sid === small.id) {
+                    post.smallCategoryName = small.name
+                }
+            })
         })
-        smallCategories.forEach(small => {
-            if (post.sid === small.id) {
-                post.smallCategoryName = small.name
-            }
-        })
-
-    })
+    }
     res.render('dashboard/browse/list-post', {
         layout: 'editor-dashboard.hbs',
         posts
