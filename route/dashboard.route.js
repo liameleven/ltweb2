@@ -430,7 +430,7 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
             else {
                 post.isActive = true
             }
-            post.status = postModel.parseStatusHTML(post.status)           
+            post.status = postModel.parseStatusHTML(post.status)
             bigCategories.forEach(big => {
                 if (post.bid === big.bid) {
                     post.bigCategoryName = big.name
@@ -442,7 +442,7 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
                 }
             })
         })
-    }    
+    }
     res.render('dashboard/post/list-post', {
         layout: 'writer-dashboard.hbs',
         posts
@@ -653,7 +653,10 @@ router.post('/updateprofile', async (req, res) => {
     const dob = moment(req.body.birthday, 'DD/MM/YYYY').format('YYYY-MM-DD')
     req.body.birthday = dob
     await userModel.update(req.body, req.session.authUser.uid)
-    res.redirect('/dashboard')
+    if (req.session.authUser.permission == usersModel.Subscriber)
+        return res.redirect('/')
+    else
+        return res.redirect('/dashboard')
 })
 router.get('/updateprofile', async (req, res) => {
     var user = await userModel.getByUserId(req.session.authUser.uid)
@@ -668,6 +671,7 @@ router.get('/updateprofile', async (req, res) => {
         uid: req.session.authUser.uid,
         layout: false,
         isWriter: req.session.authUser.permission == usersModel.Writer,
+
         user,
         male
     })

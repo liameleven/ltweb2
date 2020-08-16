@@ -24,6 +24,9 @@ module.exports = {
     add: (post) => {
         return db.add(TBL_POST, post)
     },
+    update: (post) => {
+        return db.patch(TBL_POST, post)
+    },
     getAll: () => {
         return db.load(`select * from ${TBL_POST}`)
     },
