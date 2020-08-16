@@ -424,7 +424,13 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
     var posts = await postModel.getByWriter(req.session.authUser.uid)
     if (posts != null) {
         posts.forEach(post => {
-            post.status = postModel.parseStatusHTML(post.status)
+            if (post.status == 1) {
+                post.isActive = false
+            }
+            else {
+                post.isActive = true
+            }
+            post.status = postModel.parseStatusHTML(post.status)           
             bigCategories.forEach(big => {
                 if (post.bid === big.bid) {
                     post.bigCategoryName = big.name
@@ -436,8 +442,7 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
                 }
             })
         })
-    }
-
+    }    
     res.render('dashboard/post/list-post', {
         layout: 'writer-dashboard.hbs',
         posts
@@ -445,7 +450,7 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
 })
 
 router.get('/writer/post/write', auth.isWriter, async (req, res) => {
-    var bigCategories = await managerModel.getListByIDManager(req.session.authUser.uid)
+    var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
@@ -473,6 +478,7 @@ const storage = multer.diskStorage({
     }
 })
 const upload = multer({ storage });
+
 router.post('/writer/post/write', auth.isWriter, upload.single('input-b1'), async (req, res) => {
     if (req.body.title == "" || req.body.summary == "" ||
         req.body.content == "") {
@@ -521,10 +527,15 @@ router.get('/editor/post/list', auth.isEditor, async (req, res) => {
 
 router.get('/editor/post', auth.isEditor, async (req, res) => {
     post = await postModel.getByIDBrowse(req.query.id)
+    var status = false
+    if (post.status == 0) {
+        status = true
+    }
     res.render('dashboard/browse/read-post', {
         layout: "editor-dashboard.hbs",
         post,
-        id: req.query.id
+        id: req.query.id,
+        status
     })
 })
 
@@ -661,7 +672,7 @@ router.get('/updateprofile', async (req, res) => {
         male
     })
 })
-////////////////////////Writer- EditTag//////////////
+////////////////////////Writer-Edit-Tag//////////////
 router.get('/writer/post', auth.isWriter, async (req, res) => {
     var postTag = await postTagModel.getAllByID(req.query.id)
     var tagName = await tagModel.getAll()
@@ -706,10 +717,10 @@ router.get('/writer/post/delete', auth.isWriter, async (req, res) => {
     await postTagModel.deletePostTag(req.query.post_id, req.query.tag_id)
     res.redirect('back')
 })
-////////Writer- EditPost//////////////
+////////Writer-Edit-Post//////////////
 router.get('/writer/post/edit-post', auth.isWriter, async (req, res) => {
-    const posts=await postModel.getAllByID(req.query.id);
-    var bigCategories = await managerModel.getListByIDManager(req.session.authUser.uid)
+    const posts = await postModel.getAllByID(req.query.id);
+    var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
@@ -723,9 +734,9 @@ router.get('/writer/post/edit-post', auth.isWriter, async (req, res) => {
     });
     res.render('dashboard/post/edit-post', {
         layout: 'writer-dashboard.hbs',
-        content:posts.content,
-        title:posts.title,
-        summary:posts.summary,
+        content: posts.content,
+        title: posts.title,
+        summary: posts.summary,
         bigCategories
     })
 })

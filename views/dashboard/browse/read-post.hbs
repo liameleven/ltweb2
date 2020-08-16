@@ -16,6 +16,7 @@
                 <p>{{{post.content}}}</p>
             </div>
             <br>
+            {{#if status}}
             <div style="text-align: center;">
                 <a class="btn btn-outline-success" href="/dashboard/editor/post/success-post?id={{id}}"
                     role="button">Approve</a>
@@ -26,6 +27,7 @@
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
+            {{/if}}
             <br>
         </div>
     </div>
