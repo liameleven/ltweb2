@@ -14,7 +14,8 @@ router.get('/', async (req, res) => {
     var topPosts = await postModel.getTopPosts()
     var newPosts = await postModel.getNewPosts()
     var popularPosts = await postModel.getPopularPosts()
-    bigCategories.forEach(big => {
+    var isLogin = req.session.isAuthenticated
+    bigCategories.forEach(async big => {
         var arraySmallCate = new Array()
         smallCategories.forEach(small => {
             if (big.bid === small.bid) {
@@ -46,6 +47,9 @@ router.get('/', async (req, res) => {
                 post.date = moment(new Date(post.date)).format('DD-MM-YYYY')
             })
         }
+        var newPostByBigCate = await postModel.getNewestPostByBigCate(big.bid)
+        newPostByBigCate.date = moment(new Date(newPostByBigCate.date)).format('DD-MM-YYYY')
+        big.post = newPostByBigCate
     });
     res.render('news/main', {
         layout: 'news.hbs',
@@ -53,7 +57,8 @@ router.get('/', async (req, res) => {
         topOnePost: topPosts[0],
         topPosts: [topPosts[1], topPosts[2]],
         newPosts,
-        popularPosts
+        popularPosts,
+        isLogin
     })
 })
 
@@ -61,6 +66,7 @@ router.get('/search', async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     var posts = await postModel.searchPost(req.query.s)
+    var isLogin = req.session.isAuthenticated
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
         smallCategories.forEach(small => {
@@ -81,7 +87,8 @@ router.get('/search', async (req, res) => {
     res.render('news/search', {
         layout: 'news.hbs',
         bigCategories,
-        posts
+        posts,
+        isLogin
     })
 })
 
@@ -111,6 +118,20 @@ router.get('/post', async (req, res) => {
         }
     });
     var isLogin = req.session.isAuthenticated
+    if(req.session.authUser == null){
+        return res.render('news/premium', {
+            layout: 'news.hbs',
+            bigCategories,
+            isLogin
+        })
+    }
+    if (post.premium && (req.session.authUser.premium_time > moment().unix() || req.session.authUser.premium_time == null || !req.session.isAuthenticated)) {
+        return res.render('news/premium', {
+            layout: 'news.hbs',
+            bigCategories,
+            isLogin
+        })
+    }
     var postDate = moment(post.date).format('DD-MM-YYYY')
     var comments = await commentModel.getByPostID(req.query.id)
     if (comments != null) {
