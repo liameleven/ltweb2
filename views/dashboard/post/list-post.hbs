@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header border-transparent">
         <h3 class="card-title">Posts</h3>
-        <a class="btn btn-success btn-sm" href="/dashboard/writer/post/write" role="button" title="Edit Category"
+        <a class="btn btn-success btn-sm" href="/dashboard/writer/post/write" role="button" title="Add Post"
             style="float: right;">
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
@@ -48,6 +48,19 @@
                         <td>{{bigCategoryName}}</td>
                         <td>{{smallCategoryName}}</td>
                         <td>{{view}}</td>
+                        <td>
+                            {{#if isActive}}
+                            <a class="btn btn-primary btn-sm" style="margin-left: -40px"
+                                href="/dashboard/writer/post?id={{id}}" role="button" title="Edit Tag"
+                                style="float: right;">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a class="btn btn-success btn-sm mr-2" href="/dashboard/writer/post/edit-post?id={{id}}"
+                                role="button" title="Edit Post" style="float: right;">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </a>
+                            {{/if}}
+                        </td>
                     </tr>
                     {{/each}}
                 </tbody>

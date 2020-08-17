@@ -24,6 +24,9 @@ module.exports = {
     add: (post) => {
         return db.add(TBL_POST, post)
     },
+    update: (post) => {
+        return db.patch(TBL_POST, post)
+    },
     getAll: () => {
         return db.load(`select * from ${TBL_POST}`)
     },
@@ -77,7 +80,15 @@ module.exports = {
         return rows[0]
     },
     getByIDBrowse: async (id) => {
-        const query = `select * from ${TBL_POST} where id = ${id} and status = 0`
+        const query = `select * from ${TBL_POST} where id = ${id}`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    },
+    getAllByID: async (id) => {
+        const query = `select * from ${TBL_POST} where id = ${id} `
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -104,7 +115,7 @@ module.exports = {
         return rows
     },
     getPostByBigCate: async (uid) => {
-        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} and status = 0 order by date desc`
+        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} order by date desc`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
