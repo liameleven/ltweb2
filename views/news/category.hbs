@@ -22,6 +22,9 @@
                             <a href="/post?id={{id}}" class="post-title">
                                 <h6>{{title}}</h6>
                             </a>
+                            {{#if premium}}
+                            <h6>Premium</h6>
+                            {{/if}}
                             <!-- Tags -->
                             <div class="newspaper-tags d-flex">
                                 <span>Tags:</span>
@@ -44,8 +47,8 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination mt-50">
                         <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
-                            <a class="page-link" href="/category?bid={{bid}}&sid={{sid}}&page={{prev_value}}" tabindex="-1"
-                                aria-disabled="true">Prev</a>
+                            <a class="page-link" href="/category?bid={{bid}}&sid={{sid}}&page={{prev_value}}"
+                                tabindex="-1" aria-disabled="true">Prev</a>
                         </li>
                         {{#each page_items}}
                         <li class="page-item {{#if isActive}}active{{/if}}"><a class="page-link"
@@ -56,9 +59,9 @@
                             <a class="page-link" href="/category?bid={{bid}}&sid={{sid}}&page={{next_value}}">Next</a>
                         </li>
                     </ul>
-                </nav> 
+                </nav>
                 {{else}}
-                    <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation example">
                     <ul class="pagination mt-50">
                         <li class="page-item {{#unless can_go_prev}}disabled{{/unless}}">
                             <a class="page-link" href="/category?bid={{bid}}&page={{prev_value}}" tabindex="-1"
@@ -73,7 +76,7 @@
                             <a class="page-link" href="/category?bid={{bid}}&page={{next_value}}">Next</a>
                         </li>
                     </ul>
-                </nav> 
+                </nav>
                 {{/if}}
             </div>
         </div>

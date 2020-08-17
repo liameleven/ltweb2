@@ -124,7 +124,7 @@ module.exports = {
     },
     /////////////////Pagination-Category//////////////
     pagebyBigCate: async (bid, limit, offset) => {
-        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 order by date desc limit ${limit} offset ${offset}`
+        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 order by date desc, premium desc limit ${limit} offset ${offset}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -136,7 +136,7 @@ module.exports = {
         return row[0].total
     },
     pagebySmallCate: async (sid, limit, offset) => {
-        const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc limit ${limit} offset ${offset} `
+        const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc, premium desc limit ${limit} offset ${offset} `
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -149,7 +149,7 @@ module.exports = {
     },
     /////////////////Pagination-Tag//////////////
     pagebyTag: async (tag_id, limit, offset) => {
-        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 limit ${limit} offset ${offset}`
+        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 order by premium desc limit ${limit} offset ${offset}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -193,11 +193,19 @@ module.exports = {
         return rows
     },
     searchPost: async (searchString) => {
-        const query = `SELECT * FROM ${TBL_POST} WHERE MATCH (title,content,summary) AGAINST ('${searchString}' IN NATURAL LANGUAGE MODE) limit 10`
+        const query = `SELECT * FROM ${TBL_POST} WHERE MATCH (title,content,summary) AGAINST ('${searchString}' IN NATURAL LANGUAGE MODE) order by premium desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
         }
         return rows
+    },
+    getNewestPostByBigCate: async (bid) => {
+        const query = `select * from ${TBL_POST} where bid = ${bid} order by date limit 1`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
     }
 }
