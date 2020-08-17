@@ -70,6 +70,14 @@ module.exports = {
         }
         return rows
     },
+    getByGroupStatus: async (uid,status) => {
+        const query = `select * from ${TBL_POST} where user_id=${uid} and status=${status} order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
     getBySmallCateID: async (sid) => {
         const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc`
         const rows = await db.load(query)
