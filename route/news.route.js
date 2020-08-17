@@ -48,8 +48,10 @@ router.get('/', async (req, res) => {
             })
         }
         var newPostByBigCate = await postModel.getNewestPostByBigCate(big.bid)
-        newPostByBigCate.date = moment(new Date(newPostByBigCate.date)).format('DD-MM-YYYY')
-        big.post = newPostByBigCate
+        if (newPostByBigCate != null) {
+            newPostByBigCate.date = moment(new Date(newPostByBigCate.date)).format('DD-MM-YYYY')
+            big.post = newPostByBigCate
+        }
     });
     res.render('news/main', {
         layout: 'news.hbs',
@@ -66,7 +68,6 @@ router.get('/search', async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     var posts = await postModel.searchPost(req.query.s)
-    var isLogin = req.session.isAuthenticated
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
         smallCategories.forEach(small => {
@@ -76,11 +77,15 @@ router.get('/search', async (req, res) => {
         })
         big.smallCategories = arraySmallCate
         if (posts != null) {
-            posts.forEach(post => {
+            posts.forEach(async post => {
                 if (post.bid === big.bid) {
                     post.bigCate = big
                 }
                 post.date = moment(post.date).format('DD-MM-YYYY')
+                var tags = await tagModel.getPostTagByPostID(post.id)
+                if (tags != null) {
+                    post.tags = tags
+                }
             })
         }
     })
@@ -88,7 +93,7 @@ router.get('/search', async (req, res) => {
         layout: 'news.hbs',
         bigCategories,
         posts,
-        isLogin
+        isLogin: req.session.isAuthenticated
     })
 })
 
@@ -118,14 +123,14 @@ router.get('/post', async (req, res) => {
         }
     });
     var isLogin = req.session.isAuthenticated
-    if(req.session.authUser == null){
+    if (post.premium && !req.session.isAuthenticated) {
         return res.render('news/premium', {
             layout: 'news.hbs',
             bigCategories,
             isLogin
         })
     }
-    if (post.premium && (req.session.authUser.premium_time > moment().unix() || req.session.authUser.premium_time == null || !req.session.isAuthenticated)) {
+    if (post.premium && (req.session.authUser.premium_time < moment().unix() || req.session.authUser.premium_time == null)) {
         return res.render('news/premium', {
             layout: 'news.hbs',
             bigCategories,
@@ -190,10 +195,10 @@ router.get('/tag', async (req, res) => {
                 if (post.bid === big.bid) {
                     post.bigCate = big
                 }
-                // var tags = await tagModel.getPostTagByPostID(post.id)
-                // if (tags != null) {
-                //     post.tags = tags
-                // }
+                var tags = await tagModel.getPostTagByPostID(post.id)
+                if (tags != null) {
+                    post.tags = tags
+                }
             })
         }
     });
@@ -251,6 +256,27 @@ router.get('/category', async (req, res) => {
         const nPages = Math.ceil(total / config.pagination.limit)
         const page_items = []
 
+        bigCategories.forEach(big => {
+            var arraySmallCate = new Array()
+            smallCategories.forEach(small => {
+                if (big.bid === small.bid) {
+                    arraySmallCate.push(small)
+                }
+            })
+            big.smallCategories = arraySmallCate
+            if (posts != null) {
+                posts.forEach(async (post) => {
+                    if (post.bid === big.bid) {
+                        post.bigCate = big
+                    }
+                    var tags = await tagModel.getPostTagByPostID(post.id)
+                    if (tags != null) {
+                        post.tags = tags
+                    }
+                })
+            }
+        });
+
         if (page == 1) {
             for (let i = 1; i <= page + 1 && i <= nPages; i++) {
                 const item = {
@@ -285,7 +311,8 @@ router.get('/category', async (req, res) => {
             next_value: page + 1,
             can_go_prev: page > 1,
             can_go_next: page < nPages,
-            have_smallcate
+            have_smallcate,
+            isLogin: req.session.isAuthenticated
         })
     }
 
@@ -306,10 +333,10 @@ router.get('/category', async (req, res) => {
                 if (post.bid === big.bid) {
                     post.bigCate = big
                 }
-                // var tags = await tagModel.getPostTagByPostID(post.id)
-                // if (tags != null) {
-                //     post.tags = tags
-                // }
+                var tags = await tagModel.getPostTagByPostID(post.id)
+                if (tags != null) {
+                    post.tags = tags
+                }
             })
         }
     });

@@ -34,7 +34,7 @@
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Register Account</h2>
-                    <form method="POST" action="/account/register">
+                    <form method="POST" id="form" action="/account/register">
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
@@ -106,6 +106,20 @@
                             <label class="label">Pseudonym</label>
                             <input class="input--style-4" type="text" name="pseudonym">
                         </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Captcha</label>
+                                    <input class="input--style-4" type="text" id="cau_hoi" disabled >
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Answer</label>
+                                    <input class="input--style-4" type="text" id="cau_trl" >
+                                </div>
+                            </div>
+                        </div>
                         {{#if err}}
                         <p style="color: red;">{{err}}</p>
                         {{/if}}
@@ -137,6 +151,21 @@
                 }
                 else {
                     $('#writer').hide();
+                }
+            });
+            var tmp1 = Math.round(Math.random() * 10 + 1);
+            var tmp2 = Math.round(Math.random() * 10 + 1);
+            var tmp3 = Math.round(Math.random() * 10 + 1);
+            $("#cau_hoi").val(tmp1 + " * " + tmp2 +" * " +tmp3);
+            $("form").submit(function (e) {
+                e.preventDefault();frmRegister
+                if (eval($("#cau_hoi").val()) != $("#cau_trl").val()) {
+                    alert('Captcha was wrong');
+ 
+                    } 
+                else{
+                    $('#form').off('submit').submit();
+
                 }
             });
         });

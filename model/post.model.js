@@ -77,6 +77,14 @@ module.exports = {
         }
         return rows
     },
+    getByGroupStatus: async (uid,status) => {
+        const query = `select * from ${TBL_POST} where user_id=${uid} and status=${status} order by date desc`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
     getBySmallCateID: async (sid) => {
         const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc`
         const rows = await db.load(query)
@@ -129,7 +137,7 @@ module.exports = {
         return rows
     },
     getPostByBigCate: async (uid) => {
-        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} order by date desc`
+        const query = `SELECT p.id as postid,p.*,man.* FROM ${TBL_POST} p JOIN ${TBL_Manager} man on p.bid=man.bid WHERE man.uid = ${uid} and status = 1 and date < now() order by date desc`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -138,7 +146,7 @@ module.exports = {
     },
     /////////////////Pagination-Category//////////////
     pagebyBigCate: async (bid, limit, offset) => {
-        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 order by date desc, premium desc limit ${limit} offset ${offset}`
+        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 and date < now() order by date desc, premium desc limit ${limit} offset ${offset}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -150,7 +158,7 @@ module.exports = {
         return row[0].total
     },
     pagebySmallCate: async (sid, limit, offset) => {
-        const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc, premium desc limit ${limit} offset ${offset} `
+        const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 and date < now() order by date desc, premium desc limit ${limit} offset ${offset} `
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -158,12 +166,12 @@ module.exports = {
         return rows
     },
     countbySmallCate: async (sid) => {
-        const row = await db.load(`select count(*) as total from ${TBL_POST} where sid = ${sid} and status = 1`)
+        const row = await db.load(`select count(*) as total from ${TBL_POST} where sid = ${sid} and status = 1 and date < now()`)
         return row[0].total
     },
     /////////////////Pagination-Tag//////////////
     pagebyTag: async (tag_id, limit, offset) => {
-        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 order by premium desc limit ${limit} offset ${offset}`
+        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 where status = 1 and date < now() order by premium desc limit ${limit} offset ${offset}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -171,11 +179,11 @@ module.exports = {
         return rows
     },
     countbyTag: async (tag_id) => {
-        const row = await db.load(`select count(*) as total from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1`)
+        const row = await db.load(`select count(*) as total from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 and date < now()`)
         return row[0].total
     },
     getTopPosts: async () => {
-        const query = `select * from ${TBL_POST} order by view desc limit 3`
+        const query = `select * from ${TBL_POST} where status = 1 order by view desc limit 3`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -183,7 +191,7 @@ module.exports = {
         return rows
     },
     getNewPosts: async () => {
-        const query = `select * from ${TBL_POST} order by date desc limit 10`
+        const query = `select * from ${TBL_POST} where status = 1 order by date desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -191,7 +199,7 @@ module.exports = {
         return rows
     },
     getPopularPosts: async () => {
-        const query = `select * from ${TBL_POST} order by view desc limit 10`
+        const query = `select * from ${TBL_POST} where status = 1 and date < now() order by view desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -207,7 +215,7 @@ module.exports = {
         return rows
     },
     searchPost: async (searchString) => {
-        const query = `SELECT * FROM ${TBL_POST} WHERE MATCH (title,content,summary) AGAINST ('${searchString}' IN NATURAL LANGUAGE MODE) order by premium desc limit 10`
+        const query = `SELECT * FROM ${TBL_POST} WHERE MATCH (title,content,summary) AGAINST ('${searchString}' IN NATURAL LANGUAGE MODE) and date < now() order by premium desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -215,7 +223,7 @@ module.exports = {
         return rows
     },
     getNewestPostByBigCate: async (bid) => {
-        const query = `select * from ${TBL_POST} where bid = ${bid} order by date limit 1`
+        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 and date < now() order by date limit 1`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
