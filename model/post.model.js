@@ -87,7 +87,7 @@ module.exports = {
         return rows
     },
     getByID: async (id) => {
-        const query = `select * from ${TBL_POST} where id = ${id} and status = 1`
+        const query = `select * from ${TBL_POST} where id = ${id} and status = 1 and date < now()`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -164,7 +164,7 @@ module.exports = {
     },
     /////////////////Pagination-Tag//////////////
     pagebyTag: async (tag_id, limit, offset) => {
-        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 where status = 1 and date < now() order by premium desc limit ${limit} offset ${offset}`
+        const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 and p.date < now() order by premium desc limit ${limit} offset ${offset}`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
