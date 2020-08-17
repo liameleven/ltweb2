@@ -449,7 +449,36 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
     })
 })
 
-
+router.get('/writer/post/group-list', auth.isWriter, async (req, res) => {
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    var posts = await postModel.getByGroupStatus(req.session.authUser.uid,req.query.status)
+    if (posts != null) {
+        posts.forEach(post => {
+            if (post.status == 1) {
+                post.isActive = false
+            }
+            else {
+                post.isActive = true
+            }
+            post.status = postModel.parseStatusHTML(post.status)
+            bigCategories.forEach(big => {
+                if (post.bid === big.bid) {
+                    post.bigCategoryName = big.name
+                }
+            })
+            smallCategories.forEach(small => {
+                if (post.sid === small.id) {
+                    post.smallCategoryName = small.name
+                }
+            })
+        })
+    }
+    res.render('dashboard/post/group-list-post', {
+        layout: 'writer-dashboard.hbs',
+        posts
+    })
+})
 
 router.get('/writer/post/write', auth.isWriter, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
