@@ -123,14 +123,14 @@ router.get('/post', async (req, res) => {
         }
     });
     var isLogin = req.session.isAuthenticated
-    if (req.session.authUser == null) {
+    if (post.premium && !req.session.isAuthenticated) {
         return res.render('news/premium', {
             layout: 'news.hbs',
             bigCategories,
             isLogin
         })
     }
-    if (post.premium && (req.session.authUser.premium_time > moment().unix() || req.session.authUser.premium_time == null || !req.session.isAuthenticated)) {
+    if (post.premium && (req.session.authUser.premium_time < moment().unix() || req.session.authUser.premium_time == null)) {
         return res.render('news/premium', {
             layout: 'news.hbs',
             bigCategories,
