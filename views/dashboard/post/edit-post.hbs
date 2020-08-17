@@ -33,9 +33,19 @@
     <div class="card-header">
         <h3 class="card-title">Write Post</h3>
     </div>
-    <form method="post" action="" enctype="">
+    <form method="post" action="">
         <div class="card-body">
             <div class="col-sm-12">
+                {{#if isReject}}
+                <div class="form-group row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Reason</div>
+                        </div>
+                        <input type="text" class="form-control" id="reason" name="reason" disabled value="{{reason}}">
+                    </div>
+                </div>
+                {{/if}}
                 <div class="form-group row">
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
@@ -43,10 +53,6 @@
                         </div>
                         <input type="text" class="form-control" id="title" name="title" value="{{title}}">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="">Thumbnail</label>
-                    <input id="input-b1" name="input-b1" type="file" class="file"  data-browse-on-zone-click="true">
                 </div>
                 <div class="form-group row">
                     <div class="input-group mb-2">
@@ -58,7 +64,8 @@
                 </div>
                 <div class="form-group">
                     <label for="">Content</label>
-                    <textarea name="content" id="txtFullDes" class="form-control" cols="30" rows="10" value="{{{content}}}"></textarea>
+                    <textarea name="content" id="txtFullDes" class="form-control" cols="30" rows="10"
+                        value="{{{content}}}"></textarea>
                 </div>
                 <div class="form-group row">
                     <div class="input-group mb-2">
@@ -70,8 +77,13 @@
                             tabindex="-1" aria-hidden="true" name="cateID">
                             {{#each bigCategories}}
                             {{#each smallCategories}}
+                            {{#if selected}}
+                            <option selected value="{{bid}}-{{id}}" data-select2-id="14">{{../bigName}} -
+                                {{name}}</option>
+                            {{else}}
                             <option value="{{bid}}-{{id}}" data-select2-id="14">
                                 {{../bigName}} - {{name}}</option>
+                            {{/if}}
                             {{/each}}
                             {{/each}}
                         </select>
@@ -80,7 +92,7 @@
                 <div class="form-group row">
                     <div class="custom-control custom-checkbox">
                         <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="1"
-                            name="premium">
+                            {{#if checked}}checked{{/if}} name="premium">
                         <label for="customCheckbox1" class="custom-control-label">Premium</label>
                     </div>
                 </div>
