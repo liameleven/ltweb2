@@ -1,0 +1,34 @@
+<div class="card">
+    <div class="card-header border-transparent">
+        <h3 class="card-title">Posts</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <div>
+                <h1 style="text-align: center;">{{post.title}}</h1>
+            </div>
+            <br>
+            <div>
+                <h2 style="text-align: center;">{{post.summary}}</h2>
+            </div>
+            <br>
+            <div>
+                <p>{{{post.content}}}</p>
+            </div>
+            <br>
+            {{#if status}}
+            <div style="text-align: center;">
+                <a class="btn btn-outline-success" href="/dashboard/admin/post/success-post?id={{id}}"
+                    role="button">Approve</a>
+                <a class="btn btn-outline-danger" href="/dashboard/admin/post/deny-post?id={{id}}"
+                    role="button">Reject</a>
+                <a class="btn btn-primary btn-sm" href="/dashboard/admin/post/tag-name?id={{id}}" role="button"
+                    title="Edit Tag">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>
+            {{/if}}
+            <br>
+        </div>
+    </div>
+</div>
