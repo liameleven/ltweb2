@@ -117,13 +117,21 @@ router.get('/post', async (req, res) => {
             })
         }
     });
-    if (post.premium && (!req.session.authUser.premium_time > moment().unix() || req.session.authUser.premium_time == null || !req.session.isAuthenticated)) {
+    var isLogin = req.session.isAuthenticated
+    if(req.session.authUser == null){
         return res.render('news/premium', {
             layout: 'news.hbs',
-            bigCategories
+            bigCategories,
+            isLogin
         })
     }
-    var isLogin = req.session.isAuthenticated
+    if (post.premium && (req.session.authUser.premium_time > moment().unix() || req.session.authUser.premium_time == null || !req.session.isAuthenticated)) {
+        return res.render('news/premium', {
+            layout: 'news.hbs',
+            bigCategories,
+            isLogin
+        })
+    }
     var postDate = moment(post.date).format('DD-MM-YYYY')
     var comments = await commentModel.getByPostID(req.query.id)
     if (comments != null) {
