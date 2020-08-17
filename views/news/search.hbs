@@ -22,9 +22,19 @@
                             <a href="/post?id={{id}}" class="post-title">
                                 <h6>{{title}}</h6>
                             </a>
+                            {{#if premium}}
+                            <h6>Premium</h6>
+                            {{/if}}
                             <!-- Tags -->
                             <div class="newspaper-tags d-flex">
                                 <span>Tags:</span>
+                                <ul class="d-flex">
+                                    {{#each tags}}
+                                    <li><a href="/tag?id={{id}}">{{name}},</a></li>
+                                    {{!-- <li><a href="#">politics,</a></li>
+                                            <li><a href="#">stock market</a></li> --}}
+                                    {{/each}}
+                                </ul>
                                 <ul class="d-flex">
                                     {{#each tags}}
                                     <li><a href="/tag?id={{id}}">{{name}},</a></li>

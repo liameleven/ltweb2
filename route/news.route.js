@@ -68,7 +68,6 @@ router.get('/search', async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
     var posts = await postModel.searchPost(req.query.s)
-    var isLogin = req.session.isAuthenticated
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
         smallCategories.forEach(small => {
@@ -78,11 +77,15 @@ router.get('/search', async (req, res) => {
         })
         big.smallCategories = arraySmallCate
         if (posts != null) {
-            posts.forEach(post => {
+            posts.forEach(async post => {
                 if (post.bid === big.bid) {
                     post.bigCate = big
                 }
                 post.date = moment(post.date).format('DD-MM-YYYY')
+                var tags = await tagModel.getPostTagByPostID(post.id)
+                if (tags != null) {
+                    post.tags = tags
+                }
             })
         }
     })
@@ -90,7 +93,7 @@ router.get('/search', async (req, res) => {
         layout: 'news.hbs',
         bigCategories,
         posts,
-        isLogin
+        isLogin: req.session.isAuthenticated
     })
 })
 
