@@ -1,11 +1,11 @@
 {
   "mysql": {
-    "host": "remotemysql.com",
+    "host": "localhost",
     "port": 3306,
-    "user": "7o9dMGfNsY",
-    "password": "1jahaX1d9x",
-    "database": "7o9dMGfNsY",
-    "connectionLimit": 50
+    "user": "phpmyadmin",
+    "password": "root",
+    "database": "phpmyadmin",
+    "connectionLimit": 100
   },
   "authentication": {
     "saltRounds": 8

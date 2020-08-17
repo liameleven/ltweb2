@@ -161,7 +161,7 @@ module.exports = {
         return row[0].total
     },
     getTopPosts: async () => {
-        const query = `select * from ${TBL_POST} order by view desc limit 3`
+        const query = `select * from ${TBL_POST} where status = 1 order by view desc limit 3`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -169,7 +169,7 @@ module.exports = {
         return rows
     },
     getNewPosts: async () => {
-        const query = `select * from ${TBL_POST} order by date desc limit 10`
+        const query = `select * from ${TBL_POST} where status = 1 order by date desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -177,7 +177,7 @@ module.exports = {
         return rows
     },
     getPopularPosts: async () => {
-        const query = `select * from ${TBL_POST} order by view desc limit 10`
+        const query = `select * from ${TBL_POST} where status = 1 order by view desc limit 10`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
@@ -201,7 +201,7 @@ module.exports = {
         return rows
     },
     getNewestPostByBigCate: async (bid) => {
-        const query = `select * from ${TBL_POST} where bid = ${bid} order by date limit 1`
+        const query = `select * from ${TBL_POST} where bid = ${bid} and status = 1 order by date limit 1`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
