@@ -55,6 +55,13 @@ module.exports = {
         delete entity.id;
         return db.patch(TBL_POST, entity, condition);
     },
+    updateAdminSuccessPost: function (entity) {
+        const condition = {
+            id: entity.id,
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
     updatePost: function (entity) {
         const condition = {
             id: entity.id

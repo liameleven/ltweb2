@@ -414,8 +414,149 @@ router.get('/admin/editor/manager-editor/delete', auth.isAdmin, async (req, res)
     await managerModel.delete(req.query)
     res.redirect('back')
 })
+router.get('/admin/post/list', auth.isAdmin, async (req, res) => {
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    var posts = await postModel.getAll(req.session.authUser.uid)
+    if (posts != null) {
+        posts.forEach(post => {
+            post.status = postModel.parseStatusHTML(post.status)
+            bigCategories.forEach(big => {
+                if (post.bid === big.bid) {
+                    post.bigCategoryName = big.name
+                }
+            })
+            smallCategories.forEach(small => {
+                if (post.sid === small.id) {
+                    post.smallCategoryName = small.name
+                }
+            })
+        })
+    }
+    res.render('dashboard/browse/admin-list-post', {
+        layout: 'admin-dashboard.hbs',
+        posts
+    })
+})  
 
+router.get('/admin/post', auth.isAdmin, async (req, res) => {
+    post = await postModel.getByIDBrowse(req.query.id)
+    var status = false
+    if (post.status == 0) {
+        status = true
+    }
+    res.render('dashboard/browse/admin-read-post', {
+        layout: "admin-dashboard.hbs",
+        post,
+        id: req.query.id,
+        status
+    })
+})
+router.get('/admin/post/deny-post', auth.isAdmin, async (req, res) => {
+    post = await postModel.getByIDBrowse(req.query.id)
+    res.render('dashboard/browse/deny-post', {
+        layout: "editor-dashboard.hbs",
+        post
+    })
+})
 
+router.post('/admin/post/deny-post', auth.isAdmin, async (req, res) => {
+    req.body.status = 2
+    req.body.id = req.query.id
+    await postModel.updateDenyPost(req.body)
+    res.redirect('/dashboard/admin/post/list')
+})
+router.get('/admin/post/success-post', auth.isAdmin, async (req, res) => {
+    post = await postModel.getByIDBrowse(req.query.id)
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    bigCategories.forEach(big => {
+        var arraySmallCate = new Array()
+        smallCategories.forEach(small => {
+            if (big.bid === small.bid) {
+                arraySmallCate.push(small)
+            }
+        })
+        big.smallCategories = arraySmallCate
+        big.bigName = big.name
+    })
+    bigCategories.forEach(big => {
+        if (big.bid === post.bid) {
+            big.smallCategories.forEach(small => {
+                if (small.id === post.sid) {
+                    small.selected = true
+                }
+                else {
+                    small.selected = false
+                }
+            })
+        }
+    })
+    res.render('dashboard/browse/success-post', {
+        layout: "admin-dashboard.hbs",
+        post,
+        bigCategories
+    })
+})
+
+router.post('/admin/post/success-post', auth.isAdmin, async (req, res) => {
+    var cateID = String(req.body.cateID).split("-")
+    const date = moment(req.body.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+    var condition = {
+        status: 1,
+        id: req.query.id,
+        bid: cateID[0],
+        sid: cateID[1],
+        date: date
+    }
+    await postModel.updateAdminSuccessPost(condition)
+    res.redirect('/dashboard/admin/post/list')
+})
+////////Admin-Post-Tag////////////////////
+router.get('/admin/post/tag-name', auth.isAdmin, async (req, res) => {
+    var postTag = await postTagModel.getAllByID(req.query.id)
+    var tagName = await tagModel.getAll()
+    if (postTag != null) {
+        postTag.forEach(tagP => {
+            tagName.forEach(tag => {
+                if (tagP.tag_id === tag.id) {
+                    tagP.name = tag.name
+                }
+            })
+
+        })
+    }
+    res.render('dashboard/post-tag/admin-tag-post', {
+        layout: 'admin-dashboard.hbs',
+        postTag,
+        postid: req.query.id
+    })
+})
+
+router.get('/admin/post/tag-name/add', auth.isAdmin, async (req, res) => {
+    var tag = await tagModel.getAll()
+    res.render('dashboard/post-tag/add-tag-post', {
+        layout: 'admin-dashboard.hbs',
+        tag
+    })
+})
+
+router.post('/admin/post/tag-name/add', auth.isAdmin, async (req, res) => {
+    const entity = {
+        post_id: req.query.post_id,
+        tag_id: req.body.tagid
+    }
+    await postTagModel.create(entity)
+    res.redirect('/dashboard/admin/post/list')
+})
+
+router.get('/admin/post/tag-name/delete', auth.isAdmin, async (req, res) => {
+    if (!req.query.post_id || !req.query.tag_id) {
+        return res.redirect('/dashboard')
+    }
+    await postTagModel.deletePostTag(req.query.post_id, req.query.tag_id)
+    res.redirect('back')
+})
 ////////////////WRITER-POST///////////////////
 
 router.get('/writer/post/list', auth.isWriter, async (req, res) => {
@@ -618,7 +759,7 @@ router.get('/editor/post/tag-name', auth.isEditor, async (req, res) => {
 
         })
     }
-    res.render('dashboard/post-tag/tag-post', {
+    res.render('dashboard/post-tag/admin-tag-post', {
         layout: 'editor-dashboard.hbs',
         postTag,
         postid: req.query.id
