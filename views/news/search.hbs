@@ -1,0 +1,47 @@
+<!-- ##### Hero Area Start ##### -->
+<div class="hero-area">
+    <div class="container">
+    </div>
+</div>
+<!-- ##### Hero Area End ##### -->
+
+<!-- ##### Blog Area Start ##### -->
+<div class="blog-area section-padding-0-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="blog-posts-area">
+                    {{#each posts}}
+                    <!-- Single Featured Post -->
+                    <div class="single-blog-post featured-post mb-30">
+                        <div class="post-thumb">
+                            <a href="#"><img src="{{image_path}}" alt=""></a>
+                        </div>
+                        <div class="post-data">
+                            <a href="/category?id={{bigCate.bid}}" class="post-catagory">{{bigCate.name}}</a>
+                            <a href="/post?id={{id}}" class="post-title">
+                                <h6>{{title}}</h6>
+                            </a>
+                            <!-- Tags -->
+                            <div class="newspaper-tags d-flex">
+                                <span>Tags:</span>
+                                <ul class="d-flex">
+                                    {{#each tags}}
+                                    <li><a href="/tag?id={{id}}">{{name}},</a></li>
+                                    {{!-- <li><a href="#">politics,</a></li>
+                                            <li><a href="#">stock market</a></li> --}}
+                                    {{/each}}
+                                </ul>
+                            </div>
+                            <div class="post-meta">
+                                <p class="post-excerp">{{summary}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Blog Area End ##### -->

@@ -11,6 +11,9 @@ const commentModel = require('../model/comment.model')
 router.get('/', async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
+    var topPosts = await postModel.getTopPosts()
+    var newPosts = await postModel.getNewPosts()
+    var popularPosts = await postModel.getPopularPosts()
     bigCategories.forEach(big => {
         var arraySmallCate = new Array()
         smallCategories.forEach(small => {
@@ -19,10 +22,66 @@ router.get('/', async (req, res) => {
             }
         })
         big.smallCategories = arraySmallCate
+        if (topPosts != null) {
+            topPosts.forEach(post => {
+                if (post.bid === big.bid) {
+                    post.bigCate = big
+                }
+                post.date = moment(new Date(post.date)).format('DD-MM-YYYY')
+            })
+        }
+        if (newPosts != null) {
+            newPosts.forEach(post => {
+                if (post.bid === big.bid) {
+                    post.bigCate = big
+                }
+                post.date = moment(new Date(post.date)).format('DD-MM-YYYY')
+            })
+        }
+        if (popularPosts != null) {
+            popularPosts.forEach(post => {
+                if (post.bid === big.bid) {
+                    post.bigCate = big
+                }
+                post.date = moment(new Date(post.date)).format('DD-MM-YYYY')
+            })
+        }
     });
     res.render('news/main', {
         layout: 'news.hbs',
-        bigCategories
+        bigCategories,
+        topOnePost: topPosts[0],
+        topPosts: [topPosts[1], topPosts[2]],
+        newPosts,
+        popularPosts
+    })
+})
+
+router.get('/search', async (req, res) => {
+    var bigCategories = await bigCategoryModel.getAll()
+    var smallCategories = await smallCategoryModel.getAll()
+    var posts = await postModel.searchPost(req.query.s)
+    bigCategories.forEach(big => {
+        var arraySmallCate = new Array()
+        smallCategories.forEach(small => {
+            if (big.bid === small.bid) {
+                arraySmallCate.push(small)
+            }
+        })
+        big.smallCategories = arraySmallCate
+        if (posts != null) {
+            posts.forEach(post => {
+                if (post.bid === big.bid) {
+                    post.bigCate = big
+                }
+                post.date = moment(post.date).format('DD-MM-YYYY')
+            })
+        }
+    })
+    res.render('news/search', {
+        layout: 'news.hbs',
+        bigCategories,
+        posts
     })
 })
 
@@ -155,7 +214,7 @@ router.get('/tag', async (req, res) => {
 
 router.get('/category', async (req, res) => {
     var bid = req.query.bid
-    var have_smallcate= false
+    var have_smallcate = false
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
 
@@ -165,7 +224,7 @@ router.get('/category', async (req, res) => {
 
     if (req.query.sid) {
         var sid = req.query.sid
-        have_smallcate=true
+        have_smallcate = true
         var posts = await postModel.pagebySmallCate(req.query.sid, config.pagination.limit, offset)
         var total = await postModel.countbySmallCate(req.query.sid)
         const nPages = Math.ceil(total / config.pagination.limit)
@@ -239,7 +298,7 @@ router.get('/category', async (req, res) => {
             const item = {
                 value: i,
                 isActive: i === page,
-                bid: req.query.bid                
+                bid: req.query.bid
             }
             page_items.push(item)
         }

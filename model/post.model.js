@@ -24,6 +24,9 @@ module.exports = {
     add: (post) => {
         return db.add(TBL_POST, post)
     },
+    update: (post) => {
+        return db.patch(TBL_POST, post)
+    },
     getAll: () => {
         return db.load(`select * from ${TBL_POST}`)
     },
@@ -132,22 +135,22 @@ module.exports = {
         const row = await db.load(`select count(*) as total from ${TBL_POST} where bid = ${bid} and status = 1`)
         return row[0].total
     },
-    pagebySmallCate: async (sid, limit, offset) => {        
-            const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc limit ${limit} offset ${offset} `
-            const rows = await db.load(query)
-            if (rows.length === 0) {
-                return null
-            }
-            return rows
+    pagebySmallCate: async (sid, limit, offset) => {
+        const query = `select * from ${TBL_POST} where sid = ${sid} and status = 1 order by date desc limit ${limit} offset ${offset} `
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
     },
     countbySmallCate: async (sid) => {
         const row = await db.load(`select count(*) as total from ${TBL_POST} where sid = ${sid} and status = 1`)
         return row[0].total
     },
     /////////////////Pagination-Tag//////////////
-    pagebyTag: async (tag_id, limit, offset) => {        
+    pagebyTag: async (tag_id, limit, offset) => {
         const query = `select * from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1 limit ${limit} offset ${offset}`
-        const rows = await db.load(query)        
+        const rows = await db.load(query)
         if (rows.length === 0) {
             return null
         }
@@ -156,5 +159,45 @@ module.exports = {
     countbyTag: async (tag_id) => {
         const row = await db.load(`select count(*) as total from ${TBL_POST} p join ${TBL_POST_TAG} pt on p.id = pt.post_id where pt.tag_id = ${tag_id} and p.status = 1`)
         return row[0].total
+    },
+    getTopPosts: async () => {
+        const query = `select * from ${TBL_POST} order by view desc limit 3`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    getNewPosts: async () => {
+        const query = `select * from ${TBL_POST} order by date desc limit 10`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    getPopularPosts: async () => {
+        const query = `select * from ${TBL_POST} order by view desc limit 10`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    getHotPosts: async () => {
+        const query = `select * from ${TBL_POST} where SUBDATE(NOW(),date) <= 7 order by view desc limit 3`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
+    },
+    searchPost: async (searchString) => {
+        const query = `SELECT * FROM ${TBL_POST} WHERE MATCH (title,content,summary) AGAINST ('${searchString}' IN NATURAL LANGUAGE MODE) limit 10`
+        const rows = await db.load(query)
+        if (rows.length === 0) {
+            return null
+        }
+        return rows
     }
 }
