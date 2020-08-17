@@ -449,6 +449,8 @@ router.get('/writer/post/list', auth.isWriter, async (req, res) => {
     })
 })
 
+
+
 router.get('/writer/post/write', auth.isWriter, async (req, res) => {
     var bigCategories = await bigCategoryModel.getAll()
     var smallCategories = await smallCategoryModel.getAll()
@@ -478,7 +480,6 @@ const storage = multer.diskStorage({
     }
 })
 const upload = multer({ storage });
-
 router.post('/writer/post/write', auth.isWriter, upload.single('input-b1'), async (req, res) => {
     if (req.body.title == "" || req.body.summary == "" ||
         req.body.content == "") {
@@ -488,17 +489,19 @@ router.post('/writer/post/write', auth.isWriter, upload.single('input-b1'), asyn
         })
     }
     var cateID = String(req.body.cateID).split("-")
+    console.log(req.body)
     const entity = {
         title: req.body.title,
         summary: req.body.summary,
         content: req.body.content,
         user_id: req.session.authUser.uid,
+        premium: req.body.premium,
         bid: cateID[0],
         sid: cateID[1],
         image_path: '/public/images/' + req.file.originalname
     }
     await postModel.add(entity)
-    res.redirect('/writer/post/list')
+    res.redirect('/dashboard/writer/post/list')
 })
 ////////Editor Manager Post///////
 router.get('/editor/post/list', auth.isEditor, async (req, res) => {
@@ -737,34 +740,72 @@ router.get('/writer/post/edit-post', auth.isWriter, async (req, res) => {
         big.smallCategories = arraySmallCate
         big.bigName = big.name
     });
+    bigCategories.forEach(big => {
+        if (big.bid === posts.bid) {
+            big.smallCategories.forEach(small => {
+                if (small.id === posts.sid) {
+                    small.selected = true
+                }
+                else {
+                    small.selected = false
+                }
+            })
+        }
+    })
+    if (posts.premium == 1) {
+        posts.checked = true
+    }
+    else {
+        posts.checked = false
+    }
+    var isReject = false
+    if (posts.status == 2) {
+        isReject = true
+    }
     res.render('dashboard/post/edit-post', {
         layout: 'writer-dashboard.hbs',
         content: posts.content,
         title: posts.title,
         summary: posts.summary,
+        checked: posts.checked,
+        isReject,
+        reason: posts.reason,
+        status: posts.status,
         bigCategories
     })
 })
-router.post('/writer/post/edit', auth.isWriter, upload.single('input-b1'), async (req, res) => {
-    if (req.body.title == "" || req.body.summary == "" ||
-        req.body.content == "") {
+router.post('/writer/post/edit-post', auth.isWriter, async (req, res) => {
+    if (req.body.title.length === 0 || req.body.summary.length === 0 ||
+        req.body.content.length === 0) {
         return res.render('back', {
             layout: 'writer-dashboard.hbs',
             err: "You must fill all text box"
         })
     }
+
+    if (req.body.premium == null) {
+        premium = 0
+    }
+    else {
+        premium = 1
+    }
+    
+
     var cateID = String(req.body.cateID).split("-")
     const entity = {
+        id: req.query.id,
         title: req.body.title,
         summary: req.body.summary,
         content: req.body.content,
         user_id: req.session.authUser.uid,
+        premium,
+        status: 0,
         bid: cateID[0],
-        sid: cateID[1],
-        image_path: '/public/images/' + req.file.originalname
+        sid: cateID[1]
     }
-    await postModel.add(entity)
-    res.redirect('/writer/post/list')
+    console.log(entity)
+    await postModel.updatePost(entity)
+    res.redirect('/dashboard/writer/post/list')
 })
 module.exports = router
 

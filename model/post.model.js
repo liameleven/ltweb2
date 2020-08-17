@@ -55,8 +55,15 @@ module.exports = {
         delete entity.id;
         return db.patch(TBL_POST, entity, condition);
     },
+    updatePost: function (entity) {
+        const condition = {
+            id: entity.id
+        }
+        delete entity.id;
+        return db.patch(TBL_POST, entity, condition);
+    },
     getByWriter: async (uid) => {
-        const query = `select * from ${TBL_POST} where user_id=${uid}`
+        const query = `select * from ${TBL_POST} where user_id=${uid} order by status,date desc`
         const rows = await db.load(query)
         if (rows.length === 0) {
             return null
